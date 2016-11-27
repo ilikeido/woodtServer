@@ -28,6 +28,11 @@ class BaseController extends Controller
 
         return true;
     }
+
+//    function render($data) {
+//        header("Content-type:json/application;charset=utf-8");
+//        echo json_encode($data);
+//    }
     
     protected function getAllController(){
         $className = get_class($this);

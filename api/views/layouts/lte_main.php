@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-$this->title = 'YiiBoot通用管理后台';
+$this->title = '点木通App数据管理系统';
 
 $system_menus = Yii::$app->user->identity->getSystemMenus();
 $system_rights = Yii::$app->user->identity->getSystemRights();
@@ -172,7 +172,7 @@ if($otherMenu == false){
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><b>Y</b>BT</span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>Yii</b>BOOT管理系统</span>
+      <span class="logo-lg"><b>点木通</b>管理系统</span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">

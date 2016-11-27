@@ -76,7 +76,7 @@ class DemandTagController extends BaseController
      * @param integer $group_id
      * @return mixed
      */
-    public function actionView($id, $group_id)
+    public function actionView($id)
     {
         $model = $this->findModel($id);
         echo json_encode($model->getAttributes());
@@ -166,9 +166,9 @@ class DemandTagController extends BaseController
      * @return DemandTag the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id, $group_id)
+    protected function findModel($id)
     {
-        if (($model = DemandTag::findOne(['id' => $id, 'group_id' => $group_id])) !== null) {
+        if (($model = DemandTag::findOne(['id' => $id])) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

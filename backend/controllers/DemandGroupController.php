@@ -124,10 +124,7 @@ class DemandGroupController extends BaseController
         $id = Yii::$app->request->post('id');
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post())) {
-        
-              $model->flag = 1;
-        
-        
+
             if($model->validate() == true && $model->save()){
                 $msg = array('errno'=>0, 'msg'=>'保存成功');
                 echo json_encode($msg);
