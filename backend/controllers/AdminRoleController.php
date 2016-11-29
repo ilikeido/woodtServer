@@ -82,7 +82,6 @@ class AdminRoleController extends BaseController
     {
         $model = new AdminRole();
         if ($model->load(Yii::$app->request->post())) {
-        
               $model->create_user = Yii::$app->user->identity->uname;
               $model->create_date = date('Y-m-d H:i:s');
               $model->update_user = Yii::$app->user->identity->uname;
