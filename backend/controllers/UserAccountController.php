@@ -90,8 +90,6 @@ class UserAccountController extends BaseController
     {
         $model = new UserAccount();
         if ($model->load(Yii::$app->request->post())) {
-        
-        
             if($model->validate() == true && $model->save()){
                 $msg = array('errno'=>0, 'msg'=>'保存成功');
                 echo json_encode($msg);
