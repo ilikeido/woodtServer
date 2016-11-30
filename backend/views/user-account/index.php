@@ -80,8 +80,8 @@ $modelLabel = new \backend\models\UserAccount();
             
             <?php
             foreach ($models as $model) {
-                echo '<tr id="rowid_' . $model->id . '">';
-                echo '  <td><label><input type="checkbox" value="' . $model->id . '"></label></td>';
+                echo '<tr id="rowid_' . $model->uid . '">';
+                echo '  <td><label><input type="checkbox" value="' . $model->uid . '"></label></td>';
                 echo '  <td>' . $model->uid . '</td>';
                 echo '  <td>' . $model->username . '</td>';
                 echo '  <td>' . $model->nickname . '</td>';
@@ -92,9 +92,9 @@ $modelLabel = new \backend\models\UserAccount();
                 echo '  <td>' . $model->product . '</td>';
                 echo '  <td>' . $model->flag . '</td>';
                 echo '  <td class="center">';
-                echo '      <a id="view_btn" onclick="viewAction(' . $model->id . ')" class="btn btn-primary btn-sm" href="#"> <i class="glyphicon glyphicon-zoom-in icon-white"></i>查看</a>';
-                echo '      <a id="edit_btn" onclick="editAction(' . $model->id . ')" class="btn btn-primary btn-sm" href="#"> <i class="glyphicon glyphicon-edit icon-white"></i>修改</a>';
-                echo '      <a id="delete_btn" onclick="deleteAction(' . $model->id . ')" class="btn btn-danger btn-sm" href="#"> <i class="glyphicon glyphicon-trash icon-white"></i>删除</a>';
+                echo '      <a id="view_btn" onclick="viewAction(' . $model->uid . ')" class="btn btn-primary btn-sm" href="#"> <i class="glyphicon glyphicon-zoom-in icon-white"></i>查看</a>';
+                echo '      <a id="edit_btn" onclick="editAction(' . $model->uid . ')" class="btn btn-primary btn-sm" href="#"> <i class="glyphicon glyphicon-edit icon-white"></i>修改</a>';
+                echo '      <a id="delete_btn" onclick="deleteAction(' . $model->uid . ')" class="btn btn-danger btn-sm" href="#"> <i class="glyphicon glyphicon-trash icon-white"></i>删除</a>';
                 echo '  </td>';
                 echo '</tr>';
             }
@@ -278,7 +278,7 @@ function orderby(field, op){
 
  function initEditSystemModule(data, type){
 	if(type == 'create'){
-		$("#uid").val('');
+		$("#id").val('');
 		$("#username").val('');
 		$("#nickname").val('');
 		$("#email").val('');
@@ -288,10 +288,10 @@ function orderby(field, op){
 		$("#product").val('');
 		$("#parse_content").val('');
 		$("#content").val('');
-//        $("#flag").val('');
+        $("#flag").val('1');
 	}
 	else{
-		$("#uid").val(data.uid);
+		$("#id").val(data.uid);
     	$("#username").val(data.username);
     	$("#nickname").val(data.nickname);
     	$("#email").val(data.email);
@@ -301,10 +301,10 @@ function orderby(field, op){
     	$("#product").val(data.product);
     	$("#parse_content").val(data.parse_content);
     	$("#content").val(data.content);
-        $("#flag").val(flag.content);
+        $("#flag").val(data.flag);
     	}
 	if(type == "view"){
-      $("#uid").attr({readonly:true,disabled:true});
+      $("#id").attr({readonly:true,disabled:true});
       $("#username").attr({readonly:true,disabled:true});
       $("#nickname").attr({readonly:true,disabled:true});
       $("#email").attr({readonly:true,disabled:true});
@@ -318,7 +318,7 @@ function orderby(field, op){
 	$('#edit_dialog_ok').addClass('hidden');
 	}
 	else{
-      $("#uid").attr({readonly:false,disabled:false});
+      $("#id").attr({readonly:false,disabled:false});
       $("#username").attr({readonly:false,disabled:false});
       $("#nickname").attr({readonly:false,disabled:false});
       $("#email").attr({readonly:false,disabled:false});
@@ -435,6 +435,7 @@ $('#delete_btn').click(function (e) {
 $('#user-account-form').bind('submit', function(e) {
 	e.preventDefault();
 	var id = $("#id").val();
+	alert(id);
 	var action = id == "" ? "<?=Url::toRoute('user-account/create')?>" : "<?=Url::toRoute('user-account/update')?>";
     $(this).ajaxSubmit({
     	type: "post",

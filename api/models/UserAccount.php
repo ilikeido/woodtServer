@@ -30,8 +30,11 @@ use Yii;
  * @property integer $notify_count
  * @property string $kjt_tonken
  * @property string $password
+ * @property integer $flag
+ * @property string $register_time
+ * @property string $update_time
  */
-class UserAccount extends \backend\models\BaseModel
+class UserAccount extends \api\models\BaseModel implements IdentityInterface
 {
     /**
      * @inheritdoc
@@ -47,13 +50,16 @@ class UserAccount extends \backend\models\BaseModel
     public function rules()
     {
         return [
-            [['username', 'nickname', 'mobile', 'attention_count', 'fans_count', 'friend_count', 'level_number', 'kjt_tonken', 'password'], 'required'],
+            [['username', 'nickname', 'mobile', 'attention_count'], 'required'],
             [['parse_content', 'content'], 'string'],
-            [['score', 'is_auth', 'exp', 'demand_count', 'dynamic_count', 'attention_count', 'collection_count', 'fans_count', 'friend_count', 'notify_count','flag'], 'integer'],
+            [['score', 'is_auth', 'exp', 'demand_count', 'dynamic_count', 'attention_count', 'collection_count', 'fans_count', 'friend_count', 'notify_count', 'flag'], 'integer'],
+            [['register_time', 'update_time'], 'safe'],
             [['username', 'contact'], 'string', 'max' => 50],
             [['nickname'], 'string', 'max' => 100],
             [['email', 'avatar', 'product', 'kjt_tonken', 'password'], 'string', 'max' => 255],
-            [['mobile', 'level', 'level_number'], 'string', 'max' => 20]
+            [['mobile', 'level', 'level_number'], 'string', 'max' => 20],
+            [['username'], 'unique'],
+            [['mobile'], 'unique']
         ];
     }
 
@@ -74,7 +80,7 @@ class UserAccount extends \backend\models\BaseModel
             'parse_content' => Yii::t('app', '企业背景'),
             'content' => Yii::t('app', '企业介绍'),
             'score' => Yii::t('app', '积分'),
-            'is_auth' => Yii::t('app', '是否是可发布文章'),
+            'is_auth' => Yii::t('app', '是否自动登录'),
             'exp' => Yii::t('app', '经验值 '),
             'level' => Yii::t('app', '等级'),
             'demand_count' => Yii::t('app', '发表供求数'),
@@ -86,8 +92,10 @@ class UserAccount extends \backend\models\BaseModel
             'level_number' => Yii::t('app', '等级'),
             'notify_count' => Yii::t('app', '通知数'),
             'kjt_tonken' => Yii::t('app', 'token'),
-            'password' => Yii::t('app', '密码'),
-            'flag'=>Yii::t('app', '是否可用'),
+            'password' => Yii::t('app', '密码(默认123456)'),
+            'flag' => Yii::t('app', '是否可用'),
+            'register_time' => Yii::t('app', '注册时间'),
+            'update_time' => Yii::t('app', '更新时间'),
         ];
     }
 
@@ -365,7 +373,7 @@ class UserAccount extends \backend\models\BaseModel
                         'name' => 'is_auth',
                         'allowNull' => false,
 //                         'autoIncrement' => false,
-//                         'comment' => '是否是可发布文章',
+//                         'comment' => '是否自动登录',
 //                         'dbType' => "smallint(1)",
                         'defaultValue' => '0',
                         'enumValues' => null,
@@ -528,7 +536,7 @@ class UserAccount extends \backend\models\BaseModel
 //                         'autoIncrement' => false,
 //                         'comment' => '粉丝数',
 //                         'dbType' => "mediumint(10)",
-                        'defaultValue' => '',
+                        'defaultValue' => '0',
                         'enumValues' => null,
                         'isPrimaryKey' => false,
                         'phpType' => 'integer',
@@ -551,7 +559,7 @@ class UserAccount extends \backend\models\BaseModel
 //                         'autoIncrement' => false,
 //                         'comment' => '好友数',
 //                         'dbType' => "mediumint(10)",
-                        'defaultValue' => '',
+                        'defaultValue' => '0',
                         'enumValues' => null,
                         'isPrimaryKey' => false,
                         'phpType' => 'integer',
@@ -574,7 +582,7 @@ class UserAccount extends \backend\models\BaseModel
 //                         'autoIncrement' => false,
 //                         'comment' => '等级',
 //                         'dbType' => "varchar(20)",
-                        'defaultValue' => '',
+                        'defaultValue' => '0',
                         'enumValues' => null,
                         'isPrimaryKey' => false,
                         'phpType' => 'string',
@@ -614,32 +622,9 @@ class UserAccount extends \backend\models\BaseModel
                         'isSort' => true,
 //                         'udc'=>'',
                     ),
-            'flag' => array(
-                'name' => 'notify_count',
-                'allowNull' => false,
-//                         'autoIncrement' => false,
-//                         'comment' => '通知数',
-//                         'dbType' => "mediumint(10)",
-                'defaultValue' => '1',
-                'enumValues' => null,
-                'isPrimaryKey' => false,
-                'phpType' => 'integer',
-                'precision' => '1',
-                'scale' => '',
-                'size' => '1',
-                'type' => 'integer',
-                'unsigned' => false,
-                'label'=>$this->getAttributeLabel('flag'),
-                'inputType' => 'text',
-                'isEdit' => true,
-                'isSearch' => true,
-                'isDisplay' => true,
-                'isSort' => true,
-//                         'udc'=>'',
-            ),
 		'kjt_tonken' => array(
                         'name' => 'kjt_tonken',
-                        'allowNull' => false,
+                        'allowNull' => true,
 //                         'autoIncrement' => false,
 //                         'comment' => 'token',
 //                         'dbType' => "varchar(255)",
@@ -664,9 +649,9 @@ class UserAccount extends \backend\models\BaseModel
                         'name' => 'password',
                         'allowNull' => false,
 //                         'autoIncrement' => false,
-//                         'comment' => '密码',
+//                         'comment' => '密码(默认123456)',
 //                         'dbType' => "varchar(255)",
-                        'defaultValue' => '',
+                        'defaultValue' => 'e10adc3949ba59abbe56e057f20f883e',
                         'enumValues' => null,
                         'isPrimaryKey' => false,
                         'phpType' => 'string',
@@ -683,8 +668,102 @@ class UserAccount extends \backend\models\BaseModel
                         'isSort' => true,
 //                         'udc'=>'',
                     ),
+		'flag' => array(
+                        'name' => 'flag',
+                        'allowNull' => false,
+//                         'autoIncrement' => false,
+//                         'comment' => '是否可用',
+//                         'dbType' => "smallint(1)",
+                        'defaultValue' => '1',
+                        'enumValues' => null,
+                        'isPrimaryKey' => false,
+                        'phpType' => 'integer',
+                        'precision' => '1',
+                        'scale' => '',
+                        'size' => '1',
+                        'type' => 'smallint',
+                        'unsigned' => false,
+                        'label'=>$this->getAttributeLabel('flag'),
+                        'inputType' => 'text',
+                        'isEdit' => true,
+                        'isSearch' => false,
+                        'isDisplay' => true,
+                        'isSort' => true,
+//                         'udc'=>'',
+                    ),
+		'register_time' => array(
+                        'name' => 'register_time',
+                        'allowNull' => true,
+//                         'autoIncrement' => false,
+//                         'comment' => '注册时间',
+//                         'dbType' => "timestamp",
+                        'defaultValue' => 'CURRENT_TIMESTAMP',
+                        'enumValues' => null,
+                        'isPrimaryKey' => false,
+                        'phpType' => 'string',
+                        'precision' => '',
+                        'scale' => '',
+                        'size' => '',
+                        'type' => 'timestamp',
+                        'unsigned' => false,
+                        'label'=>$this->getAttributeLabel('register_time'),
+                        'inputType' => 'text',
+                        'isEdit' => true,
+                        'isSearch' => false,
+                        'isDisplay' => true,
+                        'isSort' => true,
+//                         'udc'=>'',
+                    ),
+		'update_time' => array(
+                        'name' => 'update_time',
+                        'allowNull' => true,
+//                         'autoIncrement' => false,
+//                         'comment' => '更新时间',
+//                         'dbType' => "timestamp",
+                        'defaultValue' => '',
+                        'enumValues' => null,
+                        'isPrimaryKey' => false,
+                        'phpType' => 'string',
+                        'precision' => '',
+                        'scale' => '',
+                        'size' => '',
+                        'type' => 'timestamp',
+                        'unsigned' => false,
+                        'label'=>$this->getAttributeLabel('update_time'),
+                        'inputType' => 'text',
+                        'isEdit' => true,
+                        'isSearch' => false,
+                        'isDisplay' => true,
+                        'isSort' => true,
+//                         'udc'=>'',
+                    ),
 		        );
         
+    }
+
+    public static function findIdentity($id)
+    {
+        return static::findOne($id);
+    }
+
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        return static::findOne(['kjt_tonken' => $token]);
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getAuthKey()
+    {
+        return $this->authKey;
+    }
+
+    public function validateAuthKey($authKey)
+    {
+        return $this->authKey === $authKey;
     }
  
 }

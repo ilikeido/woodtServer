@@ -21,7 +21,7 @@ $config = [
             'cookieValidationKey' => 'w3BnewAWmCrjijzkiLucYD5Ty1Ym_V9F',
         ],
         'user'=>[
-            'identityClass' => 'common\models\User',
+            'identityClass' => 'api\models\UserAccount',
             'enableAutoLogin' => true,
             'enableSession'=>false,
         ],
