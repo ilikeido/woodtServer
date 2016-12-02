@@ -75,6 +75,7 @@ class SiteController extends BaseController
 
           
     }
+
     
     public function actionLogout()
     {

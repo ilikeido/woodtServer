@@ -6,13 +6,16 @@ use yii\bootstrap\ActiveForm;
 use common\utils\CommonFun;
 use yii\helpers\Url;
 
-use backend\models\DemandGroup;
+use backend\models\UserGroup;
 
-$modelLabel = new \backend\models\DemandGroup();
+$modelLabel = new \backend\models\UserGroup();
 ?>
 
 <?php $this->beginBlock('header');  ?>
 <!-- <head></head>中代码块 -->
+<!--<script src="--><?//=Url::base()?><!--/plugins/bootstrap-fileinput/locales/zh.js"></script>-->
+<script src="<?=Url::base()?>/plugins/bootstrap-fileinput/fileinput.min.js"></script>
+<link rel="stylesheet" href="<?=Url::base()?>/plugins/bootstrap-fileinput/fileinput.min.css">
 <?php $this->endBlock(); ?>
 
 <!-- Main content -->
@@ -38,16 +41,11 @@ $modelLabel = new \backend\models\DemandGroup();
             <!-- row start search-->
           	<div class="row">
           	<div class="col-sm-12">
-                <?php ActiveForm::begin(['id' => 'demand-group-search-form', 'method'=>'get', 'options' => ['class' => 'form-inline'], 'action'=>Url::toRoute('demand-group/index')]); ?>     
+                <?php ActiveForm::begin(['id' => 'user-group-search-form', 'method'=>'get', 'options' => ['class' => 'form-inline'], 'action'=>Url::toRoute('user-group/index')]); ?>     
                 
                   <div class="form-group" style="margin: 5px;">
                       <label><?=$modelLabel->getAttributeLabel('id')?>:</label>
                       <input type="text" class="form-control" id="query[id]" name="query[id]"  value="<?=isset($query["id"]) ? $query["id"] : "" ?>">
-                  </div>
-
-                  <div class="form-group" style="margin: 5px;">
-                      <label><?=$modelLabel->getAttributeLabel('category_id')?>:</label>
-                      <input type="text" class="form-control" id="query[category_id]" name="query[category_id]"  value="<?=isset($query["category_id"]) ? $query["category_id"] : "" ?>">
                   </div>
               <div class="form-group">
               	<a onclick="searchAction()" class="btn btn-primary btn-sm" href="#"> <i class="glyphicon glyphicon-zoom-in icon-white"></i>搜索</a>
@@ -68,11 +66,11 @@ $modelLabel = new \backend\models\DemandGroup();
               $orderby = isset($_GET['orderby']) ? $_GET['orderby'] : '';
 		      echo '<th><input id="data_table_check" type="checkbox"></th>';
               echo '<th onclick="orderby(\'id\', \'desc\')" '.CommonFun::sortClass($orderby, 'id').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('id').'</th>';
-              echo '<th onclick="orderby(\'group_id\', \'desc\')" '.CommonFun::sortClass($orderby, 'group_id').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('group_id').'</th>';
-              echo '<th onclick="orderby(\'category_id\', \'desc\')" '.CommonFun::sortClass($orderby, 'category_id').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('category_id').'</th>';
-              echo '<th onclick="orderby(\'name\', \'desc\')" '.CommonFun::sortClass($orderby, 'name').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('name').'</th>';
-              echo '<th onclick="orderby(\'sort\', \'desc\')" '.CommonFun::sortClass($orderby, 'sort').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('sort').'</th>';
-              echo '<th onclick="orderby(\'flag\', \'desc\')" '.CommonFun::sortClass($orderby, 'flag').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('flag').'</th>';
+              echo '<th onclick="orderby(\'icon\', \'desc\')" '.CommonFun::sortClass($orderby, 'icon').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('icon').'</th>';
+              echo '<th onclick="orderby(\'icon_src\', \'desc\')" '.CommonFun::sortClass($orderby, 'icon_src').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('icon_src').'</th>';
+              echo '<th onclick="orderby(\'level\', \'desc\')" '.CommonFun::sortClass($orderby, 'level').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('level').'</th>';
+              echo '<th onclick="orderby(\'title\', \'desc\')" '.CommonFun::sortClass($orderby, 'title').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('title').'</th>';
+              echo '<th onclick="orderby(\'display\', \'desc\')" '.CommonFun::sortClass($orderby, 'display').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('display').'</th>';
          
 			?>
 	
@@ -86,16 +84,16 @@ $modelLabel = new \backend\models\DemandGroup();
                 echo '<tr id="rowid_' . $model->id . '">';
                 echo '  <td><label><input type="checkbox" value="' . $model->id . '"></label></td>';
                 echo '  <td>' . $model->id . '</td>';
-                echo '  <td>' . $model->group_id . '</td>';
-                echo '  <td>' . $model->category_id . '</td>';
-                echo '  <td>' . $model->name . '</td>';
-                echo '  <td>' . $model->sort . '</td>';
-                echo '  <td>' . $model->flag . '</td>';
+                echo '  <td>' . $model->icon . '</td>';
+                echo '  <td>' . $model->icon_src . '</td>';
+                echo '  <td>' . $model->level . '</td>';
+                echo '  <td>' . $model->title . '</td>';
+                echo '  <td>' . $model->display . '</td>';
                 echo '  <td class="center">';
-				echo '      <a id="group_btn" class="btn btn-primary btn-sm" href="../demand-tag/index?id='. $model->id .'"> <i class="glyphicon glyphicon-zoom-in icon-white"></i>品名</a>';
                 echo '      <a id="view_btn" onclick="viewAction(' . $model->id . ')" class="btn btn-primary btn-sm" href="#"> <i class="glyphicon glyphicon-zoom-in icon-white"></i>查看</a>';
                 echo '      <a id="edit_btn" onclick="editAction(' . $model->id . ')" class="btn btn-primary btn-sm" href="#"> <i class="glyphicon glyphicon-edit icon-white"></i>修改</a>';
                 echo '      <a id="delete_btn" onclick="deleteAction(' . $model->id . ')" class="btn btn-danger btn-sm" href="#"> <i class="glyphicon glyphicon-trash icon-white"></i>删除</a>';
+				echo '      <a id="delete_btn" onclick="iconAction(' . $model->id . ')" class="btn btn-danger btn-sm" href="#"> <i class="glyphicon glyphicon-zoom-in icon-white"></i>图标</a>';
                 echo '  </td>';
                 echo '</tr>';
             }
@@ -144,6 +142,28 @@ $modelLabel = new \backend\models\DemandGroup();
   <!-- /.row -->
 </section>
 <!-- /.content -->
+<div class="modal fade" id="icon_dialog" tabindex="-1" role="dialog"
+	 aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">×</button>
+				<h3>Settings</h3>
+			</div>
+			<div class="modal-body">
+				<?php $form = ActiveForm::begin(["id" => "demand-group-form", "class"=>"form-horizontal", "action"=>Url::toRoute("demand-group/iconupload")]); ?>
+				<input type="hidden" class="form-control" id="icon_gid" name="DemandGroup[id]" />
+				<input id="input-image" name="file" type="file" multiple class="file-loading" accept="image/*">
+
+				<?php ActiveForm::end(); ?>
+			</div>
+			<div class="modal-footer">
+				<a href="#" class="btn btn-default" data-dismiss="modal">关闭</a> <a
+					id="edit_dialog_ok" href="#" class="btn btn-primary">确定</a>
+			</div>
+		</div>
+	</div>
+</div>
 
 <div class="modal fade" id="edit_dialog" tabindex="-1" role="dialog"
 	aria-labelledby="myModalLabel" aria-hidden="true">
@@ -154,40 +174,46 @@ $modelLabel = new \backend\models\DemandGroup();
 				<h3>Settings</h3>
 			</div>
 			<div class="modal-body">
-                <?php $form = ActiveForm::begin(["id" => "demand-group-form", "class"=>"form-horizontal", "action"=>Url::toRoute("demand-group/save")]); ?>                      
+                <?php $form = ActiveForm::begin(["id" => "user-group-form", "class"=>"form-horizontal", "action"=>Url::toRoute("user-group/save")]); ?>                      
                  
-          <input type="hidden" class="form-control" id="id" name="DemandGroup[id]" />
+          <input type="hidden" class="form-control" id="id" name="UserGroup[id]" />
 
-          <div id="group_id_div" class="form-group">
-              <label for="group_id" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("group_id")?></label>
+          <div id="icon_div" class="form-group">
+              <label for="icon" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("icon")?></label>
               <div class="col-sm-10">
-                  <input type="text" class="form-control" id="group_id" name="DemandGroup[group_id]" placeholder="必填" />
+                  <input type="text" class="form-control" id="icon" name="UserGroup[icon]" placeholder="" />
               </div>
               <div class="clearfix"></div>
           </div>
 
-          <input type="hidden" class="form-control" id="category_id" name="DemandGroup[category_id]" value="<?=$category_id?>"/>
-
-          <div id="name_div" class="form-group">
-              <label for="name" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("name")?></label>
+          <div id="icon_src_div" class="form-group">
+              <label for="icon_src" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("icon_src")?></label>
               <div class="col-sm-10">
-                  <input type="text" class="form-control" id="name" name="DemandGroup[name]" placeholder="必填" />
+                  <input type="text" class="form-control" id="icon_src" name="UserGroup[icon_src]" placeholder="" />
               </div>
               <div class="clearfix"></div>
           </div>
 
-          <div id="sort_div" class="form-group">
-              <label for="sort" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("sort")?></label>
+          <div id="level_div" class="form-group">
+              <label for="level" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("level")?></label>
               <div class="col-sm-10">
-                  <input type="text" class="form-control" id="sort" name="DemandGroup[sort]" placeholder="必填" />
+                  <input type="text" class="form-control" id="level" name="UserGroup[level]" placeholder="必填" />
               </div>
               <div class="clearfix"></div>
           </div>
 
-          <div id="flag_div" class="form-group">
-              <label for="flag" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("flag")?></label>
+          <div id="title_div" class="form-group">
+              <label for="title" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("title")?></label>
               <div class="col-sm-10">
-                  <input type="text" class="form-control" id="flag" name="DemandGroup[flag]" placeholder="必填" />
+                  <input type="text" class="form-control" id="title" name="UserGroup[title]" placeholder="必填" />
+              </div>
+              <div class="clearfix"></div>
+          </div>
+
+          <div id="display_div" class="form-group">
+              <label for="display" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("display")?></label>
+              <div class="col-sm-10">
+                  <input type="text" class="form-control" id="display" name="UserGroup[display]" placeholder="" />
               </div>
               <div class="clearfix"></div>
           </div>
@@ -226,55 +252,95 @@ function orderby(field, op){
 	 window.location.href=url; 
  }
  function searchAction(){
-		$('#demand-group-search-form').submit();
+		$('#user-group-search-form').submit();
 	}
  function viewAction(id){
 		initModel(id, 'view', 'fun');
 	}
 
- function initEditSystemModule(data, type){
+function iconAction(id){
+	initIconModel(id);
+}
+
+function  initIconModel(id) {
+	$.ajax({
+		type: "GET",
+		url: "<?=Url::toRoute('user-group/view')?>",
+		data: {"id":id},
+		cache: false,
+		dataType:"json",
+		error: function (xmlHttpRequest, textStatus, errorThrown) {
+			alert("出错了，" + textStatus);
+		},
+		success: function(data){
+			initEditIconAction(data, id);
+		}
+	});
+
+}
+
+function initEditIconAction(data,id) {
+	$('#icon_gid').val(id);
+	$("#input-image").fileinput({
+		uploadUrl: "/upload/image",
+		allowedFileExtensions: ["jpg", "png", "gif"],
+		maxImageWidth: 200,
+		resizePreference: 'height',
+		maxFileCount: 1,
+		resizeImage: true
+	}).on('filepreupload', function() {
+		$('#kv-success-box').html('');
+	}).on('fileuploaded', function(event, data) {
+		$('#kv-success-box').append(data.response.link);
+		$('#kv-success-modal').modal('show');
+	});
+	$('#icon_dialog').modal('show');
+}
+
+function initEditSystemModule(data, type){
 	if(type == 'create'){
 		$("#id").val('');
-		$("#group_id").val('');
-//		$("#category_id").val('');
-		$("#name").val('');
-		$("#sort").val('1');
-		$("#flag").val('1');
+		$("#icon").val('');
+		$("#icon_src").val('');
+		$("#level").val('');
+		$("#title").val('');
+		$("#display").val('');
 		
 	}
 	else{
 		$("#id").val(data.id);
-    	$("#group_id").val(data.group_id);
-    	$("#category_id").val(data.category_id);
-    	$("#name").val(data.name);
-    	$("#sort").val(data.sort);
-    	$("#flag").val(data.flag);
+    	$("#icon").val(data.icon);
+    	$("#icon_src").val(data.icon_src);
+    	$("#level").val(data.level);
+    	$("#title").val(data.title);
+    	$("#display").val(data.display);
     	}
 	if(type == "view"){
       $("#id").attr({readonly:true,disabled:true});
-      $("#group_id").attr({readonly:true,disabled:true});
-//      $("#category_id").attr({readonly:true,disabled:true});
-      $("#name").attr({readonly:true,disabled:true});
-      $("#sort").attr({readonly:true,disabled:true});
-      $("#flag").attr({readonly:true,disabled:true});
+      $("#icon").attr({readonly:true,disabled:true});
+      $("#icon_src").attr({readonly:true,disabled:true});
+      $("#level").attr({readonly:true,disabled:true});
+      $("#title").attr({readonly:true,disabled:true});
+      $("#display").attr({readonly:true,disabled:true});
 	$('#edit_dialog_ok').addClass('hidden');
 	}
 	else{
       $("#id").attr({readonly:false,disabled:false});
-      $("#group_id").attr({readonly:false,disabled:false});
-//      $("#category_id").attr({readonly:false,disabled:false});
-      $("#name").attr({readonly:false,disabled:false});
-      $("#sort").attr({readonly:false,disabled:false});
-      $("#flag").attr({readonly:false,disabled:false});
+      $("#icon").attr({readonly:false,disabled:false});
+      $("#icon_src").attr({readonly:false,disabled:false});
+      $("#level").attr({readonly:false,disabled:false});
+      $("#title").attr({readonly:false,disabled:false});
+      $("#display").attr({readonly:false,disabled:false});
 		$('#edit_dialog_ok').removeClass('hidden');
 		}
 		$('#edit_dialog').modal('show');
 }
 
 function initModel(id, type, fun){
+	
 	$.ajax({
 		   type: "GET",
-		   url: "<?=Url::toRoute('demand-group/view')?>",
+		   url: "<?=Url::toRoute('user-group/view')?>",
 		   data: {"id":id},
 		   cache: false,
 		   dataType:"json",
@@ -312,7 +378,7 @@ function deleteAction(id){
 		admin_tool.confirm('请确认是否删除', function(){
 		    $.ajax({
 				   type: "GET",
-				   url: "<?=Url::toRoute('demand-group/delete')?>",
+				   url: "<?=Url::toRoute('user-group/delete')?>",
 				   data: {"ids":ids},
 				   cache: false,
 				   dataType:"json",
@@ -355,7 +421,7 @@ function getSelectedIdValues(formId)
 
 $('#edit_dialog_ok').click(function (e) {
     e.preventDefault();
-	$('#demand-group-form').submit();
+	$('#user-group-form').submit();
 });
 
 $('#create_btn').click(function (e) {
@@ -368,14 +434,14 @@ $('#delete_btn').click(function (e) {
     deleteAction('');
 });
 
-$('#demand-group-form').bind('submit', function(e) {
+$('#user-group-form').bind('submit', function(e) {
 	e.preventDefault();
 	var id = $("#id").val();
-	var action = id == "" ? "<?=Url::toRoute('demand-group/create')?>" : "<?=Url::toRoute('demand-group/update')?>";
+	var action = id == "" ? "<?=Url::toRoute('user-group/create')?>" : "<?=Url::toRoute('user-group/update')?>";
     $(this).ajaxSubmit({
     	type: "post",
+    	dataType:"json",
 		data:{id:id},
-		dataType:"json",
     	url: action,
     	success: function(value) 
     	{

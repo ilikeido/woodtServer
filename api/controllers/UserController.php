@@ -2,6 +2,7 @@
 
 namespace api\controllers;
 
+use common\models\User;
 use Yii;
 use yii\data\Pagination;
 use api\models\DemandArea;
@@ -42,27 +43,24 @@ class UserController extends BaseController
             ->where(['mobile'=>$mobile])
             ->andWhere(['message_type' => 1])
             ->andWhere(['message' => $code])
+            ->andWhere('<','create_time', date('Y-m-d H:i:s',time()-60*10))
             ->count();
         if ($msgCount == 0){
             return  ['code'=>3,'msg'=>'验证码不正确','time'=>time()];
         }
         $model = new UserAccount();
         $model->username = $username;
-
-        if ($model->load(Yii::$app->request->post())) {
-            if($model->validate() == true && $model->save()){
-                $msg = array('code'=>0, 'msg'=>'保存成功');
-                echo json_encode($msg);
-            }
-            else{
-                $msg = array('errno'=>2, 'data'=>$model->getErrors());
-                echo json_encode($msg);
-            }
-        } else {
-            $msg = array('errno'=>2, 'msg'=>'数据出错');
-            echo json_encode($msg);
+        $model->password = md5($password);
+        $model->mobile = $mobile;
+        $model->email = $email;
+        if($model->validate() == true && $model->save()){
+            $msg = array('code'=>0, 'msg'=>'保存成功');
+            return $msg;
         }
-        return null;
+        else{
+            $msg = array('errno'=>2, 'data'=>$model->getErrors());
+            return $msg;
+        }
     }
 
     /*
@@ -78,45 +76,102 @@ class UserController extends BaseController
         if ($count > 0){
             return  ['code'=>2,'msg'=>'该手机号已被注册','time'=>time()];
         }
+        $randCode = strval($this->getRandCode(4));
         $msgResult = UserPhonemsg::find()
             ->where(['mobile'=>$mobile])
             ->andWhere(['message_type' => 1])
-            ->orderBy('id DEC')
+            ->andWhere(['>','create_time', $this->getＥxpireTime()])
+            ->orderBy('id desc')
             ->one();
-//        $msgResult = (new \yii\db\Query())
-//            ->from('user_phonemsg')
-//            ->where(['and','mobile=:mobile','message_type=1'])
-//            ->orderBy('id DESC')
-//            ->addParams([":mobile"=>$mobile])
-//            ->one();
         if ($msgResult != null){
-            $createTime = $msgResult['create_time'];
-            $randCode = strval($this->getRandCode(4));
-            if ($createTime !=null) {
-                $second=floor((time() - strtotime($createTime))%86400%60);
-                $randCode = strval($this->getRandCode(4));
-                if ($second < 10){//10分钟
-                    $randCode = $msgResult->message;
-                    $timeString = date('Y-m-d H:i:s',time());
-                    $msgResult['create_time'] = $timeString;
-                    $this->sendMsg($randCode);
-                    $msgResult->save();
-                    return  ['code'=>0,'msg'=>'验证码已发送','time'=>time()];
-                }else{
-                    $msgResult['flag'] = 0;
-                    $msgResult->save();
-                }
-            }
+            $randCode = $msgResult->message;
         }
-        $randCode = strval($this->getRandCode(4));
         $msg = new UserPhonemsg;
         $msg->mobile = $mobile;
         $msg->message_type = 1;
         $msg->message = $randCode;
         $msg->save();
-        $this->sendMsg($randCode);
+        $this->sendMsg('您的验证码是'.$randCode.'。如非本人操作，请忽略本短信。');
         return  ['code'=>0,'msg'=>'验证码已发送','time'=>time()];
 
+    }
+
+    /**
+     * 发送忘记密码
+     */
+    public function actionSendgetpwdcode(){
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $mobile = Yii::$app->request->post('mobile');
+        $count = (new \yii\db\Query())
+            ->from('user_account')
+            ->where('mobile=:mobile', [':mobile' => $mobile])
+            ->count();
+        if ($count == 0){
+            return  ['code'=>2,'msg'=>'该手机号未注册','time'=>time()];
+        }
+        $msgResult = UserPhonemsg::find()
+            ->where(['mobile'=>$mobile])
+            ->andWhere(['message_type' => 2])
+            ->andWhere(['>','create_time', $this->getＥxpireTime()])
+            ->orderBy('id desc')
+            ->one();
+        $randCode = strval($this->getRandCode(4));
+        if ($msgResult != null){
+            $randCode = $msgResult->message;
+        }
+        $msg = new UserPhonemsg;
+        $msg->mobile = $mobile;
+        $msg->message_type = 2;
+        $msg->message = $randCode;
+        $msg->save();
+        $this->sendMsg('正在找回密码，您的验证码是'.$randCode.'。如非本人操作，请忽略本短信。');
+        return  ['code'=>0,'msg'=>'验证码已发送','time'=>time()];
+    }
+
+    /*
+     * 验证码校验(忘记密码)
+     */
+    public function actionCheckcode(){
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $mobile = Yii::$app->request->post('mobile');
+        $code = Yii::$app->request->post('code');
+        $msgCount = UserPhonemsg::find()
+            ->where(['mobile'=>$mobile])
+            ->andWhere(['message_type' => 2])
+            ->andWhere(['message' => $code])
+            ->andWhere(['>','create_time', $this->getＥxpireTime()])
+            ->count();
+        if ($msgCount == 0){
+            return  ['code'=>3,'msg'=>'验证码错误或已过期','time'=>time()];
+        }
+        return ['code'=>0,'msg'=>'','time'=>time(),'data'=>true];
+    }
+
+    /**
+     * 密码重置
+     */
+    public function actionSetpwdbymobile(){
+        $password = Yii::$app->request->post('password');
+        $mobile = Yii::$app->request->post('mobile');
+        $code = Yii::$app->request->post('code');
+        $msgCount = UserPhonemsg::find()
+            ->where(['mobile'=>$mobile])
+            ->andWhere(['message_type' => 2])
+            ->andWhere(['message' => $code])
+            ->count();
+        if ($msgCount == 0){
+            return  ['code'=>3,'msg'=>'该操作无效','time'=>time()];
+        }
+        $user = UserAccount::find()->where(['mobile'=>$mobile])->one();
+        $user['password'] = md5($password);
+        $user->save();
+        return ['code'=>0,'msg'=>'55759','time'=>time(),'data'=>true];
+    }
+    /*
+     * 获取过期时间
+     */
+    protected function getＥxpireTime(){
+        return date('Y-m-d H:i:s',time()-10*60);
     }
 
     /**
@@ -143,7 +198,7 @@ class UserController extends BaseController
     /*
      * 登录
      */
-    public function actionLogin(){
+    public function actionSubmitlogin(){
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $username = Yii::$app->request->post('username');
         $password = Yii::$app->request->post('password');
@@ -151,25 +206,28 @@ class UserController extends BaseController
         if ($username == null ||  $password == null){
             return  ['code'=>1,'msg'=>'用户名、密码不能为空','time'=>time()];
         }
-        $userResult = (new \yii\db\Query())
-            ->from('user_account')
-            ->where(['or','username=:username','mobile=:username'])
-            ->addParams([":username"=>$username])
+        $userResult = UserAccount::find()
+            ->where(['username'=>$username])
+            ->orWhere(['mobile'=>$username])
             ->one();
         if($userResult == null){
             return  ['code'=>2,'msg'=>'未找到用户','time'=>time()];
         }else{
             if ($userResult['password'] === md5($password)){
                 if ($autologin === '1'){
-                    $auth_login = md5(''.time());
-                    $_SESSION[$auth_login] = $userResult;
-                    $_COOKIE['home_user_auth_auto_login'] = $auth_login;
+                    $token = md5(''.$userResult['uid'].time());
+                    $_SESSION[$token] = $userResult;
+                    $_COOKIE['home_user_auth_auto_login'] = $token;
                 }
-                return  ['code'=>0,'msg'=>'','time'=>time(),'data'=>$userResult];
+                return  ['code'=>0,'msg'=>'','time'=>time(),'data'=>['uid'=>$userResult['uid'],'token'=>$token]];
             }else{
                 return  ['code'=>2,'msg'=>'密码或用户名输入不正确','time'=>time()];
             }
         }
+    }
+
+    public function actionGetinfo(){
+
     }
 
     private function validatePassword($password){

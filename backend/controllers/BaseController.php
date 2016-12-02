@@ -38,7 +38,7 @@ class BaseController extends Controller
         }
         else{
             $system_rights = Yii::$app->user->identity->getSystemRights();
-            $loginAllowUrl = ['site/index', 'site/logout', 'site/psw', 'site/psw-save'];
+            $loginAllowUrl = ['site/index', 'site/logout', 'site/psw', 'site/psw-save','site/upload'];
 
             if(in_array($route, $loginAllowUrl) == false){
                if((empty($system_rights) == true || empty($system_rights[$route]) == true)){
