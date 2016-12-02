@@ -38,7 +38,17 @@ class UserController extends BaseController
         if($code == null){
             return  ['code'=>3,'msg'=>'验证码不能为空','time'=>time()];
         }
+        $msgCount = UserPhonemsg::find()
+            ->where(['mobile'=>$mobile])
+            ->andWhere(['message_type' => 1])
+            ->andWhere(['message' => $code])
+            ->count();
+        if ($msgCount == 0){
+            return  ['code'=>3,'msg'=>'验证码不正确','time'=>time()];
+        }
         $model = new UserAccount();
+        $model->username = $username;
+
         if ($model->load(Yii::$app->request->post())) {
             if($model->validate() == true && $model->save()){
                 $msg = array('code'=>0, 'msg'=>'保存成功');
@@ -71,7 +81,7 @@ class UserController extends BaseController
         $msgResult = UserPhonemsg::find()
             ->where(['mobile'=>$mobile])
             ->andWhere(['message_type' => 1])
-            ->orderBy('id')
+            ->orderBy('id DEC')
             ->one();
 //        $msgResult = (new \yii\db\Query())
 //            ->from('user_phonemsg')
