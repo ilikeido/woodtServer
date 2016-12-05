@@ -14,7 +14,7 @@ use yii\rest\ActiveController;
 /**
  * TestController implements the CRUD actions for Test model.
  */
-class AreasController extends ActiveController
+class AreasController extends BaseController
 {
 
     public $modelClass = 'api\models\DemandArea';

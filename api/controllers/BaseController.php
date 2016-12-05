@@ -25,6 +25,7 @@ class BaseController extends Controller
 //        $behaviors['authenticator'] = [
 //            'class' => QueryParamAuth::className(),
 //        ];
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         return $behaviors;
     }
 

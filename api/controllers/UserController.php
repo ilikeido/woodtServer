@@ -17,6 +17,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use api\controllers\BaseController;
+use api\services\UserAccountService;
 /**
  * TestController implements the CRUD actions for Test model.
  */
@@ -27,7 +28,6 @@ class UserController extends BaseController
      */
     public function actionDoregister()
     {
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $username = Yii::$app->request->post('username');
         $password = Yii::$app->request->post('password');
         $mobile = Yii::$app->request->post('mobile');
@@ -67,7 +67,6 @@ class UserController extends BaseController
      * 发送注册验证码
      */
     public function  actionSendregistercode(){
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $mobile = Yii::$app->request->post('mobile');
         $count = (new \yii\db\Query())
             ->from('user_account')
@@ -100,7 +99,6 @@ class UserController extends BaseController
      * 发送忘记密码
      */
     public function actionSendgetpwdcode(){
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $mobile = Yii::$app->request->post('mobile');
         $count = (new \yii\db\Query())
             ->from('user_account')
@@ -112,7 +110,7 @@ class UserController extends BaseController
         $msgResult = UserPhonemsg::find()
             ->where(['mobile'=>$mobile])
             ->andWhere(['message_type' => 2])
-            ->andWhere(['>','create_time', $this->getＥxpireTime()])
+            ->andWhere(['>','create_time', $this->getExpireTime()])
             ->orderBy('id desc')
             ->one();
         $randCode = strval($this->getRandCode(4));
@@ -132,14 +130,13 @@ class UserController extends BaseController
      * 验证码校验(忘记密码)
      */
     public function actionCheckcode(){
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $mobile = Yii::$app->request->post('mobile');
         $code = Yii::$app->request->post('code');
         $msgCount = UserPhonemsg::find()
             ->where(['mobile'=>$mobile])
             ->andWhere(['message_type' => 2])
             ->andWhere(['message' => $code])
-            ->andWhere(['>','create_time', $this->getＥxpireTime()])
+            ->andWhere(['>','create_time', $this->getExpireTime()])
             ->count();
         if ($msgCount == 0){
             return  ['code'=>3,'msg'=>'验证码错误或已过期','time'=>time()];
@@ -170,7 +167,7 @@ class UserController extends BaseController
     /*
      * 获取过期时间
      */
-    protected function getＥxpireTime(){
+    protected function getExpireTime(){
         return date('Y-m-d H:i:s',time()-10*60);
     }
 
@@ -199,7 +196,6 @@ class UserController extends BaseController
      * 登录
      */
     public function actionSubmitlogin(){
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $username = Yii::$app->request->post('username');
         $password = Yii::$app->request->post('password');
         $autologin = Yii::$app->request->post('autologin');
@@ -207,17 +203,18 @@ class UserController extends BaseController
             return  ['code'=>1,'msg'=>'用户名、密码不能为空','time'=>time()];
         }
         $userResult = UserAccount::find()
+            ->select(['uid','password'])
             ->where(['username'=>$username])
             ->orWhere(['mobile'=>$username])
             ->one();
-        $userInfo = $userResult->attributes;
         if($userResult == null){
             return  ['code'=>2,'msg'=>'未找到用户','time'=>time()];
         }else{
             if ($userResult['password'] === md5($password)){
                 if ($autologin === '1'){
                     $token = md5(''.$userResult['uid'].time());
-                    $_SESSION[$token] = $userResult;
+                    $userInfo = $this->getUserDetail($userResult['uid']);
+                    $_SESSION[$token] = $userInfo;
                     $_COOKIE['home_user_auth_auto_login'] = $token;
                 }
                 return  ['code'=>0,'msg'=>'','time'=>time(),'data'=>['uid'=>$userResult['uid'],'token'=>$token]];
@@ -235,15 +232,24 @@ class UserController extends BaseController
         if (!$_SESSION->isActive || $token == null || $_SESSION[$token] == null){
             return  ['code'=>1,'msg'=>'没有登录','time'=>time()];
         }else{
-
+            $userInfo = $_SESSION[$token];
+            return  ['code'=>0,'msg'=>'','time'=>time(),'data'=>$userInfo];
         }
+    }
+
+    /*
+     * 获取用户详情
+     */
+    protected function getUserDetail($uid){
+        $userService =  new UserAccountService();
+        $userDetail =  $userService->getUserDetail($uid);
+        return  ['code'=>0,'msg'=>'','time'=>time(),'data'=>$userDetail];
     }
 
     /**
      * 获取session
      */
     public function actionRefresh(){
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         //1.调用session组件
         $session = \Yii::$app -> session;
         //2.判断session是否开启

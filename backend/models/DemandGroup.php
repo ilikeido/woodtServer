@@ -7,13 +7,13 @@ use Yii;
  * This is the model class for table "demand_group".
  *
  * @property integer $id
- * @property integer $group_id
  * @property integer $category_id
  * @property string $name
  * @property integer $sort
  * @property integer $flag
  *
  * @property DemandCategory $category
+ * @property DemandTag[] $demandTags
  */
 class DemandGroup extends \backend\models\BaseModel
 {
@@ -31,8 +31,8 @@ class DemandGroup extends \backend\models\BaseModel
     public function rules()
     {
         return [
-            [['group_id', 'category_id', 'name', 'sort'], 'required'],
-            [['group_id', 'category_id', 'sort', 'flag'], 'integer'],
+            [['category_id', 'name', 'sort'], 'required'],
+            [['category_id', 'sort', 'flag'], 'integer'],
             [['name'], 'string', 'max' => 100]
         ];
     }
@@ -44,7 +44,6 @@ class DemandGroup extends \backend\models\BaseModel
     {
         return [
             'id' => Yii::t('app', '编号'),
-            'group_id' => Yii::t('app', '分组编号'),
             'category_id' => Yii::t('app', '分类编号'),
             'name' => Yii::t('app', '分组名称'),
             'sort' => Yii::t('app', '排序'),
@@ -58,6 +57,14 @@ class DemandGroup extends \backend\models\BaseModel
     public function getCategory()
     {
         return $this->hasOne(DemandCategory::className(), ['id' => 'category_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDemandTags()
+    {
+        return $this->hasMany(DemandTag::className(), ['group_id' => 'id']);
     }
 
   /**
@@ -96,29 +103,6 @@ class DemandGroup extends \backend\models\BaseModel
                         'inputType' => 'hidden',
                         'isEdit' => true,
                         'isSearch' => true,
-                        'isDisplay' => true,
-                        'isSort' => true,
-//                         'udc'=>'',
-                    ),
-		'group_id' => array(
-                        'name' => 'group_id',
-                        'allowNull' => false,
-//                         'autoIncrement' => false,
-//                         'comment' => '分组编号',
-//                         'dbType' => "int(10)",
-                        'defaultValue' => '',
-                        'enumValues' => null,
-                        'isPrimaryKey' => false,
-                        'phpType' => 'integer',
-                        'precision' => '10',
-                        'scale' => '',
-                        'size' => '10',
-                        'type' => 'integer',
-                        'unsigned' => false,
-                        'label'=>$this->getAttributeLabel('group_id'),
-                        'inputType' => 'text',
-                        'isEdit' => true,
-                        'isSearch' => false,
                         'isDisplay' => true,
                         'isSort' => true,
 //                         'udc'=>'',
