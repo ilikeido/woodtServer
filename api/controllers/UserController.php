@@ -210,6 +210,7 @@ class UserController extends BaseController
             ->where(['username'=>$username])
             ->orWhere(['mobile'=>$username])
             ->one();
+        $userInfo = $userResult->attributes;
         if($userResult == null){
             return  ['code'=>2,'msg'=>'未找到用户','time'=>time()];
         }else{
@@ -226,8 +227,34 @@ class UserController extends BaseController
         }
     }
 
+    /*
+     * 获取用户信息
+     */
     public function actionGetinfo(){
+        $token = $_COOKIE['home_user_auth_auto_login'];
+        if (!$_SESSION->isActive || $token == null || $_SESSION[$token] == null){
+            return  ['code'=>1,'msg'=>'没有登录','time'=>time()];
+        }else{
 
+        }
+    }
+
+    /**
+     * 获取session
+     */
+    public function actionRefresh(){
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        //1.调用session组件
+        $session = \Yii::$app -> session;
+        //2.判断session是否开启
+        if($session->isActive)
+        {
+
+        }else{
+            //3.开启session
+            $session -> open();
+        }
+        return  ['code'=>2,'msg'=>'','time'=>time(),'data'=>0];
     }
 
     private function validatePassword($password){

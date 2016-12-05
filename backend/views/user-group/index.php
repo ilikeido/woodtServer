@@ -16,6 +16,7 @@ $modelLabel = new \backend\models\UserGroup();
 <!--<script src="--><?//=Url::base()?><!--/plugins/bootstrap-fileinput/locales/zh.js"></script>-->
 <script src="<?=Url::base()?>/plugins/bootstrap-fileinput/fileinput.min.js"></script>
 <link rel="stylesheet" href="<?=Url::base()?>/plugins/bootstrap-fileinput/fileinput.min.css">
+<script src="<?=Url::base()?>/plugins/bootstrap-fileinput/locales/zh.js"></script>
 <?php $this->endBlock(); ?>
 
 <!-- Main content -->
@@ -85,7 +86,7 @@ $modelLabel = new \backend\models\UserGroup();
                 echo '  <td><label><input type="checkbox" value="' . $model->id . '"></label></td>';
                 echo '  <td>' . $model->id . '</td>';
                 echo '  <td>' . $model->icon . '</td>';
-                echo '  <td>' . $model->icon_src . '</td>';
+                echo '  <td> <img src="'. $model->icon_src . '" style="height:20px" /></td>';
                 echo '  <td>' . $model->level . '</td>';
                 echo '  <td>' . $model->title . '</td>';
                 echo '  <td>' . $model->display . '</td>';
@@ -93,7 +94,7 @@ $modelLabel = new \backend\models\UserGroup();
                 echo '      <a id="view_btn" onclick="viewAction(' . $model->id . ')" class="btn btn-primary btn-sm" href="#"> <i class="glyphicon glyphicon-zoom-in icon-white"></i>查看</a>';
                 echo '      <a id="edit_btn" onclick="editAction(' . $model->id . ')" class="btn btn-primary btn-sm" href="#"> <i class="glyphicon glyphicon-edit icon-white"></i>修改</a>';
                 echo '      <a id="delete_btn" onclick="deleteAction(' . $model->id . ')" class="btn btn-danger btn-sm" href="#"> <i class="glyphicon glyphicon-trash icon-white"></i>删除</a>';
-				echo '      <a id="delete_btn" onclick="iconAction(' . $model->id . ')" class="btn btn-danger btn-sm" href="#"> <i class="glyphicon glyphicon-zoom-in icon-white"></i>图标</a>';
+				echo '      <a id="icon_btn" onclick="iconAction(' . $model->id . ')" class="btn btn-danger btn-sm" href="#"> <i class="glyphicon glyphicon-zoom-in icon-white"></i>图标</a>';
                 echo '  </td>';
                 echo '</tr>';
             }
@@ -148,18 +149,21 @@ $modelLabel = new \backend\models\UserGroup();
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">×</button>
-				<h3>Settings</h3>
+				<h3>图标设置</h3>
 			</div>
 			<div class="modal-body">
-				<?php $form = ActiveForm::begin(["id" => "demand-group-form", "class"=>"form-horizontal", "action"=>Url::toRoute("demand-group/iconupload")]); ?>
-				<input type="hidden" class="form-control" id="icon_gid" name="DemandGroup[id]" />
-				<input id="input-image" name="file" type="file" multiple class="file-loading" accept="image/*">
-
+				<div id="kv-avatar-errors-1" class="center-block" style="width:500px;display:none"></div>
+				<?php $form = ActiveForm::begin(["id" => "group-icon-form", "class"=>"form-horizontal", "action"=>Url::toRoute("user-group/icon")]); ?>
+				<input type="hidden" class="form-control" id="group_id" name="id" />
+				<input type="hidden" class="form-control" id="group_icon_src" name="icon_src" />
+				<div class="kv-avatar center-block" style="width:200px">
+					<input id="input-image" name="file" type="file" multiple class="file-loading" accept="image/*">
+				</div>
 				<?php ActiveForm::end(); ?>
 			</div>
 			<div class="modal-footer">
 				<a href="#" class="btn btn-default" data-dismiss="modal">关闭</a> <a
-					id="edit_dialog_ok" href="#" class="btn btn-primary">确定</a>
+					id="icon_dialog_ok"  href="#" class="btn btn-primary">确定</a>
 			</div>
 		</div>
 	</div>
@@ -174,7 +178,7 @@ $modelLabel = new \backend\models\UserGroup();
 				<h3>Settings</h3>
 			</div>
 			<div class="modal-body">
-                <?php $form = ActiveForm::begin(["id" => "user-group-form", "class"=>"form-horizontal", "action"=>Url::toRoute("user-group/save")]); ?>                      
+                <?php $form = ActiveForm::begin(["id" => "upload-image-form", "class"=>"form-horizontal", "action"=>Url::toRoute("user-group/save")]); ?>
                  
           <input type="hidden" class="form-control" id="id" name="UserGroup[id]" />
 
@@ -230,6 +234,19 @@ $modelLabel = new \backend\models\UserGroup();
 </div>
 <?php $this->beginBlock('footer');  ?>
 <!-- <body></body>后代码块 -->
+<style>
+	.kv-avatar .file-preview-frame,.kv-avatar .file-preview-frame:hover {
+		margin: 0;
+		padding: 0;
+		border: none;
+		box-shadow: none;
+		text-align: center;
+	}
+	.kv-avatar .file-input {
+		display: table-cell;
+		max-width: 220px;
+	}
+</style>
  <script>
 function orderby(field, op){
 	 var url = window.location.search;
@@ -280,19 +297,32 @@ function  initIconModel(id) {
 }
 
 function initEditIconAction(data,id) {
-	$('#icon_gid').val(id);
+	$('#group_id').val(id);
 	$("#input-image").fileinput({
+		language: 'zh',
 		uploadUrl: "/upload/image",
-		allowedFileExtensions: ["jpg", "png", "gif"],
-		maxImageWidth: 200,
-		resizePreference: 'height',
-		maxFileCount: 1,
-		resizeImage: true
+		overwriteInitial: true,
+//		maxFileSize: 1500,
+		maxImageWidth: 50,
+		maxImageHeight: 50,
+		resizeImage: true,
+		showClose: false,
+		showCaption: false,
+		browseOnZoneClick: true,
+		browseLabel: '',
+		removeLabel: '',
+		browseIcon: '<i class="glyphicon glyphicon-folder-open"></i>',
+		removeIcon: '<i class="glyphicon glyphicon-remove"></i>',
+		removeTitle: '取消或重置',
+		elErrorContainer: '#kv-avatar-errors-1',
+		msgErrorClass: 'alert alert-block alert-danger',
+		defaultPreviewContent: '<img src="' + data.icon_src + '" alt="图标" style="width:150px">',
+		layoutTemplates: {main2: '{preview}{remove}{browse}'},
+		allowedFileExtensions: ["jpg", "png", "gif"]
 	}).on('filepreupload', function() {
-		$('#kv-success-box').html('');
+		$('#group_icon_src').val('');
 	}).on('fileuploaded', function(event, data) {
-		$('#kv-success-box').append(data.response.link);
-		$('#kv-success-modal').modal('show');
+		$('#group_icon_src').val(data.response.link);
 	});
 	$('#icon_dialog').modal('show');
 }
@@ -305,7 +335,6 @@ function initEditSystemModule(data, type){
 		$("#level").val('');
 		$("#title").val('');
 		$("#display").val('');
-		
 	}
 	else{
 		$("#id").val(data.id);
@@ -322,7 +351,7 @@ function initEditSystemModule(data, type){
       $("#level").attr({readonly:true,disabled:true});
       $("#title").attr({readonly:true,disabled:true});
       $("#display").attr({readonly:true,disabled:true});
-	$('#edit_dialog_ok').addClass('hidden');
+		$('#edit_dialog_ok').addClass('hidden');
 	}
 	else{
       $("#id").attr({readonly:false,disabled:false});
@@ -424,6 +453,11 @@ $('#edit_dialog_ok').click(function (e) {
 	$('#user-group-form').submit();
 });
 
+$('#icon_dialog_ok').click(function (e) {
+	e.preventDefault();
+	$('#group-icon-form').submit();
+});
+
 $('#create_btn').click(function (e) {
     e.preventDefault();
     initEditSystemModule({}, 'create');
@@ -462,6 +496,31 @@ $('#user-group-form').bind('submit', function(e) {
     });
 });
 
+$('#group-icon-form').bind('submit', function(e) {
+	e.preventDefault();
+	var action =  "<?=Url::toRoute('user-group/icon')?>" ;
+	$(this).ajaxSubmit({
+		type: "post",
+		dataType:"json",
+		url: action,
+		success: function(value)
+		{
+			if(value.errno == 0){
+				$('#edit_dialog').modal('hide');
+				admin_tool.alert('msg_info', '添加成功', 'success');
+				window.location.reload();
+			}
+			else{
+				var json = value.data;
+				for(var key in json){
+					$('#' + key).attr({'data-placement':'bottom', 'data-content':json[key], 'data-toggle':'popover'}).addClass('popover-show').popover('show');
+
+				}
+			}
+
+		}
+	});
+});
  
 </script>
 <?php $this->endBlock(); ?>

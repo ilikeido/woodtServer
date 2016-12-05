@@ -139,6 +139,16 @@ class UserGroupController extends BaseController
     
     }
 
+    public function actionIcon(){
+        $id = Yii::$app->request->post('id');
+        $icon_src = Yii::$app->request->post('icon_src');
+        $model = $this->findModel($id);
+        $model->icon_src = $icon_src;
+        $model->save();
+        $msg = array('errno'=>0, 'msg'=>'保存成功');
+        echo json_encode($msg);
+    }
+
     /**
      * Deletes an existing UserGroup model.
      * If deletion is successful, the browser will be redirected to the 'index' page.

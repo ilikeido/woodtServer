@@ -20,8 +20,9 @@ class UploadForm extends Model
      */
     public function  rules()
     {
-        return
-            [[['file'], 'file'],'extensions' => 'jpg,png','maxSize'=>1024000];
+        return [
+            [['file'], 'file'],
+        ];
     }
 
     public function formName()

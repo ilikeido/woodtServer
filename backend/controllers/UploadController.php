@@ -65,21 +65,20 @@ class UploadController extends Controller
         if (Yii::$app->request->isPost) {
             $model->file = UploadedFile::getInstance($model,'file');
             //文件上传存放的目录
-            $dir = Yii::$app->basePath."/public/uploads/".date("Ymd");
+            $dir = '/Users/ilikeido/woodtServer/static/'.date("Ymd");
             if (!is_dir($dir)){
-                mkdir($dir,true);
+                mkdir($dir);
             }
             if ($model->validate()) {
 //文件名
                 $fileName = date("HiiHsHis").$model->file->baseName . "." . $model->file->extension;
                 $dir = $dir."/". $fileName;
                 $model->file->saveAs($dir);
-                $uploadSuccessPath = "/uploads/".date("Ymd")."/".$fileName;
-                return ['code'=>0,'path'=>$uploadSuccessPath];
+                $uploadSuccessPath = "http://static.woodt.com/".date("Ymd").'/'.$fileName;
+                return ['code'=>0,'link'=>$uploadSuccessPath];
             }
         }
         return ['code'=>1,'message'=>'上传失败'];
-
     }
 
 //    public  function  mkdir($dir){

@@ -15,7 +15,7 @@ class BaseController extends Controller
     public function init()
     {
         parent::init();
-        \Yii::$app->user->enableSession = false;
+        \Yii::$app->user->enableSession = true;
         $this->enableCsrfValidation = false;
     }
 
