@@ -4,26 +4,26 @@ namespace backend\controllers;
 
 use Yii;
 use yii\data\Pagination;
-use backend\models\Demand;
+use backend\models\UserDevice;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * DemandController implements the CRUD actions for Demand model.
+ * UserDeviceController implements the CRUD actions for UserDevice model.
  */
-class DemandController extends BaseController
+class UserDeviceController extends BaseController
 {
 	public $layout = "lte_main";
 
     /**
-     * Lists all Demand models.
+     * Lists all UserDevice models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $query = Demand::find();
+        $query = UserDevice::find();
          $querys = Yii::$app->request->get('query');
         if(count($querys) > 0){
             $condition = "";
@@ -70,7 +70,7 @@ class DemandController extends BaseController
     }
 
     /**
-     * Displays a single Demand model.
+     * Displays a single UserDevice model.
      * @param integer $id
      * @return mixed
      */
@@ -82,29 +82,17 @@ class DemandController extends BaseController
     }
 
     /**
-     * Creates a new Demand model.
+     * Creates a new UserDevice model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Demand();
+        $model = new UserDevice();
         if ($model->load(Yii::$app->request->post())) {
         
               if(empty($model->create_time) == true){
                   $model->create_time = 'CURRENT_TIMESTAMP';
-              }
-              if(empty($model->number) == true){
-                  $model->number = 1000;
-              }
-              if(empty($model->buy_or_sale) == true){
-                  $model->buy_or_sale = 1;
-              }
-              if(empty($model->flag) == true){
-                  $model->flag = 1;
-              }
-              if(empty($model->sort) == true){
-                  $model->sort = 999;
               }
         
             if($model->validate() == true && $model->save()){
@@ -122,7 +110,7 @@ class DemandController extends BaseController
     }
 
     /**
-     * Updates an existing Demand model.
+     * Updates an existing UserDevice model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -134,10 +122,6 @@ class DemandController extends BaseController
         if ($model->load(Yii::$app->request->post())) {
         
               $model->create_time = 'CURRENT_TIMESTAMP';
-              $model->number = 1000;
-              $model->buy_or_sale = 1;
-              $model->flag = 1;
-              $model->sort = 999;
         
         
             if($model->validate() == true && $model->save()){
@@ -156,7 +140,7 @@ class DemandController extends BaseController
     }
 
     /**
-     * Deletes an existing Demand model.
+     * Deletes an existing UserDevice model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -164,7 +148,7 @@ class DemandController extends BaseController
     public function actionDelete(array $ids)
     {
         if(count($ids) > 0){
-            $c = Demand::deleteAll(['in', 'id', $ids]);
+            $c = UserDevice::deleteAll(['in', 'id', $ids]);
             echo json_encode(array('errno'=>0, 'data'=>$c, 'msg'=>json_encode($ids)));
         }
         else{
@@ -175,15 +159,15 @@ class DemandController extends BaseController
     }
 
     /**
-     * Finds the Demand model based on its primary key value.
+     * Finds the UserDevice model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Demand the loaded model
+     * @return UserDevice the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Demand::findOne($id)) !== null) {
+        if (($model = UserDevice::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

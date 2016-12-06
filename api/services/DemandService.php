@@ -41,7 +41,19 @@ class DemandService extends Demand {
     }
 
 
-    public function getCatorys(){
+    /*
+     * 获取标签列表
+     */
+    public function getTags($categoryid,$groupid){
+        $tagQuery = (new Query())->select(['name'])->from('demand_tag')->where(['group_id'=>$groupid])->andWhere(['flag'=>1])->orderBy('id');
+        $tags = $tagQuery->all();
+        return $tags;
+    }
+
+    /*
+     * 获取类型列表
+     */
+    public function getAllcatorys(){
         $categroyQuery = (new Query())->select(['id','name','title'])->from('demand_category')->where(['flag'=>1])->orderBy('sort,id');
         $categories = $categroyQuery->all();
         $groupQuery = (new Query())->select(['id','category_id','name'])->from('demand_group')->where(['flag'=>1])->orderBy('id');
@@ -57,7 +69,6 @@ class DemandService extends Demand {
         }
         return $categories;
     }
-
 
     /*
      * 获取供求详情
@@ -77,7 +88,7 @@ class DemandService extends Demand {
      * 获取供求列表
      */
     public function getPage($root,$p=1,$catory='',$group='',$tag='',$area='',$order='pos'){
-        $query = (new Query())->from('demand')->select('id','uid','title','view','create_time','buy_or_sale')->where(['flag' => 1]);
+        $query = (new Query())->from('demand')->select(['id','uid','title','view','create_time','buy_or_sale'])->where(['flag' => 1]);
         if ($root === 'sale'){
             $query = $query->andWhere(['buy'=>2]);
         }
@@ -85,10 +96,10 @@ class DemandService extends Demand {
             $query = $query->andWhere(['buy'=>1]);
         }
         if(!empty($catory)){
-            $query = $query->andWhere(['catory'=>$catory]);
+            $query = $query->andWhere(['category_name'=>$catory]);
         }
         if(!empty($group)){
-            $query = $query->andWhere(['group'=>$group]);
+            $query = $query->andWhere(['group_id'=>$group]);
         }
         if(!empty($tag)){
             $query = $query->andWhere(['tag'=>$tag]);

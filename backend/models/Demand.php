@@ -13,12 +13,12 @@ use Yii;
  * @property string $price
  * @property string $unit
  * @property integer $number
- * @property integer $group_id
  * @property integer $buy_or_sale
  * @property integer $area
+ * @property string $area_title
  * @property string $category_name
  * @property string $category_title
- * @property string $area_title
+ * @property integer $group_id
  * @property string $group_title
  * @property string $address
  * @property string $parse_content
@@ -43,8 +43,8 @@ class Demand extends \backend\models\BaseModel
     public function rules()
     {
         return [
-            [['title', 'category_name', 'category_title', 'parse_content', 'uid'], 'required'],
-            [['view', 'number', 'group_id', 'buy_or_sale', 'area', 'uid', 'pos', 'flag', 'sort'], 'integer'],
+            [['title', 'parse_content', 'uid'], 'required'],
+            [['view', 'number', 'buy_or_sale', 'area', 'group_id', 'uid', 'pos', 'flag', 'sort'], 'integer'],
             [['create_time'], 'safe'],
             [['price'], 'number'],
             [['parse_content'], 'string'],
@@ -69,19 +69,19 @@ class Demand extends \backend\models\BaseModel
             'price' => Yii::t('app', '价格'),
             'unit' => Yii::t('app', '单位'),
             'number' => Yii::t('app', '数据'),
-            'group_id' => Yii::t('app', '组编号'),
             'buy_or_sale' => Yii::t('app', '供求标识(供1 求2)'),
             'area' => Yii::t('app', '地区'),
+            'area_title' => Yii::t('app', '区名'),
             'category_name' => Yii::t('app', '分类英文名'),
             'category_title' => Yii::t('app', '类名'),
-            'area_title' => Yii::t('app', '区名'),
+            'group_id' => Yii::t('app', '组编号'),
             'group_title' => Yii::t('app', '组名'),
             'address' => Yii::t('app', '地址'),
             'parse_content' => Yii::t('app', '内容'),
             'uid' => Yii::t('app', 'Uid'),
             'pos' => Yii::t('app', '推荐'),
             'flag' => Yii::t('app', '状态(1为正常  0为下架)'),
-            'sort' => Yii::t('app', '推荐'),
+            'sort' => Yii::t('app', '排序'),
         ];
     }
 
@@ -150,7 +150,7 @@ class Demand extends \backend\models\BaseModel
                     ),
 		'view' => array(
                         'name' => 'view',
-                        'allowNull' => false,
+                        'allowNull' => true,
 //                         'autoIncrement' => false,
 //                         'comment' => '查看次数',
 //                         'dbType' => "mediumint(20)",
@@ -173,7 +173,7 @@ class Demand extends \backend\models\BaseModel
                     ),
 		'create_time' => array(
                         'name' => 'create_time',
-                        'allowNull' => false,
+                        'allowNull' => true,
 //                         'autoIncrement' => false,
 //                         'comment' => '创建时间',
 //                         'dbType' => "timestamp",
@@ -263,29 +263,6 @@ class Demand extends \backend\models\BaseModel
                         'isSort' => true,
 //                         'udc'=>'',
                     ),
-		'group_id' => array(
-                        'name' => 'group_id',
-                        'allowNull' => true,
-//                         'autoIncrement' => false,
-//                         'comment' => '组编号',
-//                         'dbType' => "int(10)",
-                        'defaultValue' => '',
-                        'enumValues' => null,
-                        'isPrimaryKey' => false,
-                        'phpType' => 'integer',
-                        'precision' => '10',
-                        'scale' => '',
-                        'size' => '10',
-                        'type' => 'integer',
-                        'unsigned' => false,
-                        'label'=>$this->getAttributeLabel('group_id'),
-                        'inputType' => 'text',
-                        'isEdit' => true,
-                        'isSearch' => false,
-                        'isDisplay' => true,
-                        'isSort' => true,
-//                         'udc'=>'',
-                    ),
 		'buy_or_sale' => array(
                         'name' => 'buy_or_sale',
                         'allowNull' => false,
@@ -311,11 +288,11 @@ class Demand extends \backend\models\BaseModel
                     ),
 		'area' => array(
                         'name' => 'area',
-                        'allowNull' => false,
+                        'allowNull' => true,
 //                         'autoIncrement' => false,
 //                         'comment' => '地区',
 //                         'dbType' => "int(3)",
-                        'defaultValue' => '0',
+                        'defaultValue' => '',
                         'enumValues' => null,
                         'isPrimaryKey' => false,
                         'phpType' => 'integer',
@@ -332,9 +309,32 @@ class Demand extends \backend\models\BaseModel
                         'isSort' => true,
 //                         'udc'=>'',
                     ),
+		'area_title' => array(
+                        'name' => 'area_title',
+                        'allowNull' => true,
+//                         'autoIncrement' => false,
+//                         'comment' => '区名',
+//                         'dbType' => "varchar(20)",
+                        'defaultValue' => '',
+                        'enumValues' => null,
+                        'isPrimaryKey' => false,
+                        'phpType' => 'string',
+                        'precision' => '20',
+                        'scale' => '',
+                        'size' => '20',
+                        'type' => 'string',
+                        'unsigned' => false,
+                        'label'=>$this->getAttributeLabel('area_title'),
+                        'inputType' => 'text',
+                        'isEdit' => true,
+                        'isSearch' => false,
+                        'isDisplay' => true,
+                        'isSort' => true,
+//                         'udc'=>'',
+                    ),
 		'category_name' => array(
                         'name' => 'category_name',
-                        'allowNull' => false,
+                        'allowNull' => true,
 //                         'autoIncrement' => false,
 //                         'comment' => '分类英文名',
 //                         'dbType' => "varchar(4)",
@@ -357,7 +357,7 @@ class Demand extends \backend\models\BaseModel
                     ),
 		'category_title' => array(
                         'name' => 'category_title',
-                        'allowNull' => false,
+                        'allowNull' => true,
 //                         'autoIncrement' => false,
 //                         'comment' => '类名',
 //                         'dbType' => "varchar(200)",
@@ -378,22 +378,22 @@ class Demand extends \backend\models\BaseModel
                         'isSort' => true,
 //                         'udc'=>'',
                     ),
-		'area_title' => array(
-                        'name' => 'area_title',
-                        'allowNull' => false,
+		'group_id' => array(
+                        'name' => 'group_id',
+                        'allowNull' => true,
 //                         'autoIncrement' => false,
-//                         'comment' => '区名',
-//                         'dbType' => "varchar(20)",
+//                         'comment' => '组编号',
+//                         'dbType' => "int(10)",
                         'defaultValue' => '',
                         'enumValues' => null,
                         'isPrimaryKey' => false,
-                        'phpType' => 'string',
-                        'precision' => '20',
+                        'phpType' => 'integer',
+                        'precision' => '10',
                         'scale' => '',
-                        'size' => '20',
-                        'type' => 'string',
+                        'size' => '10',
+                        'type' => 'integer',
                         'unsigned' => false,
-                        'label'=>$this->getAttributeLabel('area_title'),
+                        'label'=>$this->getAttributeLabel('group_id'),
                         'inputType' => 'text',
                         'isEdit' => true,
                         'isSearch' => false,
@@ -403,7 +403,7 @@ class Demand extends \backend\models\BaseModel
                     ),
 		'group_title' => array(
                         'name' => 'group_title',
-                        'allowNull' => false,
+                        'allowNull' => true,
 //                         'autoIncrement' => false,
 //                         'comment' => '组名',
 //                         'dbType' => "varchar(100)",
@@ -543,7 +543,7 @@ class Demand extends \backend\models\BaseModel
                         'name' => 'sort',
                         'allowNull' => false,
 //                         'autoIncrement' => false,
-//                         'comment' => '推荐',
+//                         'comment' => '排序',
 //                         'dbType' => "bigint(10)",
                         'defaultValue' => '999',
                         'enumValues' => null,

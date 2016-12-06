@@ -92,7 +92,6 @@ class UserController extends BaseController
         $msg->save();
         $this->sendMsg('您的验证码是'.$randCode.'。如非本人操作，请忽略本短信。');
         return  ['code'=>0,'msg'=>'验证码已发送','time'=>time()];
-
     }
 
     /**
@@ -164,6 +163,7 @@ class UserController extends BaseController
         $user->save();
         return ['code'=>0,'msg'=>'55759','time'=>time(),'data'=>true];
     }
+
     /*
      * 获取过期时间
      */
@@ -214,8 +214,20 @@ class UserController extends BaseController
                 if ($autologin === '1'){
                     $token = md5(''.$userResult['uid'].time());
                     $userInfo = $this->getUserDetail($userResult['uid']);
-                    $_SESSION[$token] = $userInfo;
-                    $_COOKIE['home_user_auth_auto_login'] = $token;
+                    $session = Yii::$app->session;
+                    if($session->isActive)
+                    {
+                    }else{
+                        $session -> open();
+                    }
+                    $session[$token] = $userInfo;
+                    $cookies = Yii::$app->response->cookies;
+                    $cookies->remove('home_user_auth_auto_login');
+                    $cookies->add(new \yii\web\Cookie([
+                        'name' => 'home_user_auth_auto_login',
+                        'value' => $token,
+                        'expire'=>time() + 86400 * 7
+                    ]));
                 }
                 return  ['code'=>0,'msg'=>'','time'=>time(),'data'=>['uid'=>$userResult['uid'],'token'=>$token]];
             }else{
@@ -228,12 +240,31 @@ class UserController extends BaseController
      * 获取用户信息
      */
     public function actionGetinfo(){
-        $token = $_COOKIE['home_user_auth_auto_login'];
-        if (!$_SESSION->isActive || $token == null || $_SESSION[$token] == null){
+        $cookies = Yii::$app->request->cookies;
+        $token = $cookies['home_user_auth_auto_login'];
+        if ($cookies->has('home_user_auth_auto_login')){
+            $token = $cookies->getValue('home_user_auth_auto_login');
+            if ($token != null){
+                $session = Yii::$app->session;
+                $userInfo = $session[$token];
+                return  ['code'=>0,'msg'=>'','time'=>time(),'data'=>$userInfo];
+            }
+        }
+        return  ['code'=>1,'msg'=>'没有登录','time'=>time()];
+    }
+
+    /*
+     * 判断是否登录
+     */
+    public function actionIslogin(){
+        $cookies = Yii::$app->request->cookies;
+        $token = $cookies['home_user_auth_auto_login'];
+        $session = Yii::$app->session;
+        if (!$session->isActive || $token == null || $session[$token] == null){
             return  ['code'=>1,'msg'=>'没有登录','time'=>time()];
         }else{
-            $userInfo = $_SESSION[$token];
-            return  ['code'=>0,'msg'=>'','time'=>time(),'data'=>$userInfo];
+            $userInfo = $session[$token];
+            return  ['code'=>0,'msg'=>'','time'=>time(),'data'=>['uid'=>$userInfo['uid'],'nickname'=>$userInfo['nickname'],'avatar'=>$userInfo['avatar'],'mobile'=>$userInfo['mobile']]];
         }
     }
 
@@ -243,7 +274,7 @@ class UserController extends BaseController
     protected function getUserDetail($uid){
         $userService =  new UserAccountService();
         $userDetail =  $userService->getUserDetail($uid);
-        return  ['code'=>0,'msg'=>'','time'=>time(),'data'=>$userDetail];
+        return $userDetail;
     }
 
     /**

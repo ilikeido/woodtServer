@@ -39,7 +39,7 @@ class DemandController extends BaseController
     /*
      * 获取类别数据字典
      */
-    public  function actionAllcatoryandtag(){
+    public  function actionGetAllCatoryAndTag(){
         $cache = Yii::$app->cache;
         $value = false;//$cache->get('AllCatoryAndTag');
         if($value == false){
@@ -49,18 +49,17 @@ class DemandController extends BaseController
         }else{
             return $value;
         }
-
     }
 
     /*
      * 获取类别数据字典
      */
-    public  function actionAllcatory(){
+    public  function actionGetallcategory(){
         $cache = Yii::$app->cache;
         $value = false;//$cache->get('AllCatoryAndTag');
         if($value == false){
             $service = new DemandService();
-            $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>$service->getCatorys()];
+            $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>$service->getAllcatorys()];
 //            $dependency = new \yii\caching\ExpressionDependency(
 //                ['expression'=> $cache->get('category-group-tag-updateTime')]
 //            );
@@ -99,6 +98,20 @@ class DemandController extends BaseController
         $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>$demand];
         return $result;
     }
+
+    /*
+    * 获取列表
+    */
+    public function actionGettags(){
+        $category = Yii::$app->request->post('category');
+        $group = Yii::$app->request->post('group');
+        $demandService = new DemandService();
+        $tags = $demandService->getTags($category,$group);
+        $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>$tags];
+        return $result;
+    }
+
+
 
 
 
