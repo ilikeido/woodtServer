@@ -35,7 +35,7 @@ class DemandService extends Demand {
                     array_push($tempGroupArray,$group);
                 }
             }
-            $_category['group'] = $tempGroupArray;
+            $_category['groups'] = $tempGroupArray;
         }
         return $categories;
     }
@@ -62,10 +62,11 @@ class DemandService extends Demand {
             $tempGroupArray = array();
             foreach ($groups as $group){
                 if ($_category['id'] === $group['category_id']){
-                    array_push($tempGroupArray,$group);
+                    ArrayHelper::remove($group,'category_id');
+                    array_push($tempGroupArray,[$group['id'],$group['name']]);
                 }
             }
-            $_category['group'] = ArrayHelper::map($tempGroupArray,'id','name');
+            $_category['groups'] = $tempGroupArray;
         }
         return $categories;
     }

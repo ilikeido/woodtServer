@@ -240,15 +240,9 @@ class UserController extends BaseController
      * 获取用户信息
      */
     public function actionGetinfo(){
-        $cookies = Yii::$app->request->cookies;
-        $token = $cookies['home_user_auth_auto_login'];
-        if ($cookies->has('home_user_auth_auto_login')){
-            $token = $cookies->getValue('home_user_auth_auto_login');
-            if ($token != null){
-                $session = Yii::$app->session;
-                $userInfo = $session[$token];
-                return  ['code'=>0,'msg'=>'','time'=>time(),'data'=>$userInfo];
-            }
+        $userInfo = $this->getUserBySessionToken();
+        if ($userInfo != null){
+            return  ['code'=>0,'msg'=>'','time'=>time(),'data'=>$userInfo];
         }
         return  ['code'=>1,'msg'=>'没有登录','time'=>time()];
     }

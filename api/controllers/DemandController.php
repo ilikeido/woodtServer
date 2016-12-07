@@ -39,7 +39,7 @@ class DemandController extends BaseController
     /*
      * 获取类别数据字典
      */
-    public  function actionGetAllCatoryAndTag(){
+    public  function actionGetAllCategoryAndTag(){
         $cache = Yii::$app->cache;
         $value = false;//$cache->get('AllCatoryAndTag');
         if($value == false){

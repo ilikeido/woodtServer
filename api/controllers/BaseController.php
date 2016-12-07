@@ -34,6 +34,19 @@ class BaseController extends Controller
         return [];
     }
 
+    public function getUserBySessionToken(){
+        $cookies = Yii::$app->request->cookies;
+        if ($cookies->has('home_user_auth_auto_login')){
+            $token = $cookies->getValue('home_user_auth_auto_login');
+            if ($token != null){
+                $session = Yii::$app->session;
+                $userInfo = $session[$token];
+                return  $userInfo;
+            }
+        }
+        return null;
+    }
+
     /**
      * Checks the privilege of the current user.
      *
