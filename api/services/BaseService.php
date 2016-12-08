@@ -4,9 +4,11 @@ namespace api\services;
 class BaseService
 {
     public static function format_date($time) {
+        if (is_string($time)){
+            $time = strtotime($time);
+        }
         $nowtime = time();
         $difference = $nowtime - $time;
-
         switch ($difference) {
 
             case $difference <= '60' :

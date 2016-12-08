@@ -2,6 +2,9 @@
 namespace api\services;
 
 use api\models\Demand;
+use api\models\DemandArea;
+use api\models\DemandCategory;
+use api\models\DemandGroup;
 use api\models\UserAccount;
 use api\models\UserGroup;
 use api\models\UserTag;
@@ -71,6 +74,8 @@ class DemandService extends Demand {
         return $categories;
     }
 
+
+
     /*
      * 获取供求详情
      */
@@ -78,6 +83,7 @@ class DemandService extends Demand {
         $query = (new Query())->from('demand')->where(['id'=>$id]);
         $demand = $query->one();
         if ($demand != null){
+            $demand['create_time_format'] = BaseService::format_date(strftime($demand['create_time']));
             $userQuery = (new Query())->from('user_account')->select(['uid','nickname','avatar','mobile','contact','level_number'])->where(['uid'=>$demand['uid']]);
             $user = $userQuery->one();
             $demand['user'] = $user;
@@ -85,31 +91,55 @@ class DemandService extends Demand {
        return $demand;
     }
 
+    public static function getGroupById($id){
+        return DemandGroup::findOne($id);
+    }
+
+    public static function getCategoryById($id){
+        return DemandCategory::findOne($id);
+    }
+
+    public static function  getAreaById($id){
+        return DemandArea::findOne($id);
+    }
+
+    public static function  getDemandById($id){
+        return Demand::findOne($id);
+    }
+
+
     /*
      * 获取供求列表
      */
-    public function getPage($root,$p=1,$catory='',$group='',$tag='',$area='',$order='pos'){
+    public function getPage($root,$p=1,$uid,$catory='',$group='',$tag='',$area='',$order='pos'){
         $query = (new Query())->from('demand')->select(['id','uid','title','view','create_time','buy_or_sale'])->where(['flag' => 1]);
         if ($root === 'sale'){
-            $query = $query->andWhere(['buy'=>2]);
+            $query = $query->andWhere(['buy_or_sale'=>2]);
         }
         if($root === 'buy'){
-            $query = $query->andWhere(['buy'=>1]);
+            $query = $query->andWhere(['buy_or_sale'=>1]);
         }
-        if(!empty($catory)){
+        if(!empty($catory) && !($catory === 'demand')){
             $query = $query->andWhere(['category_name'=>$catory]);
+        }
+        if(!empty($uid)){
+            $query = $query->andWhere(['uid'=>$uid]);
         }
         if(!empty($group)){
             $query = $query->andWhere(['group_id'=>$group]);
         }
         if(!empty($tag)){
-            $query = $query->andWhere(['tag'=>$tag]);
+            $query = $query->andWhere(['tags'=>$tag]);
         }
         if(!empty($area)){
             $query = $query->andWhere(['area'=>$area]);
         }
-        $count = $query->count();
-        $pagination = new Pagination(['totalCount' =>$count, 'pageSize' => 30,'page'=>$p]);
+        $pagination = new Pagination([
+                'totalCount' =>$query->count(),
+                'pageSize' => '30',
+                'pageParam'=>'page',
+                'pageSizeParam'=>'per-page']
+        );
         if($order === 'time'){
             $query = $query->orderBy('create_time desc');
         }else if($order === 'price_desc'){
@@ -125,10 +155,10 @@ class DemandService extends Demand {
         foreach ($result as &$item){
             $createtime = $item['create_time'];
             $createtimeFormat = BaseService::format_date(strftime($createtime));
-            $createtime['create_time_format'] = $createtimeFormat;
+            $item['create_time_format'] = $createtimeFormat;
             array_push($uids,$item['uid']);
         }
-        $userQuery = (new Query())->from('user_account')->select(['uid','nickname','level_number'])->where(['in','id',$uids]);
+        $userQuery = (new Query())->from('user_account')->select(['uid','nickname','level_number'])->where(['in','uid',$uids]);
         $users = $userQuery->all();
         foreach ($result as &$item){
            foreach ($users as $user){

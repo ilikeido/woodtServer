@@ -4,6 +4,7 @@ namespace api\services;
 use api\models\UserAccount;
 use api\models\UserGroup;
 use api\models\UserTag;
+use api\models\UserAttention;
 use \yii\db\Query;
 use \yii\helpers\ArrayHelper;
 
@@ -21,6 +22,8 @@ class UserAccountService extends UserAccount{
        $userResult['tags'] = ArrayHelper::getColumn($tags,'name');
        return $userResult;
     }
+
+
 
    
 }

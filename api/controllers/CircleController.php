@@ -2,7 +2,7 @@
 
 namespace api\controllers;
 
-use api\services\DemandService;
+use api\services\CircleService;
 use common\models\User;
 use Yii;
 use yii\data\Pagination;
@@ -14,7 +14,6 @@ use api\models\DemandTag;
 use api\models\UserAccount;
 use api\models\UserPhonemsg;
 use yii\data\ActiveDataProvider;
-use yii\db\Query;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -24,66 +23,20 @@ use api\services\UserAccountService;
 /**
  * TestController implements the CRUD actions for Test model.
  */
-class UserController extends BaseController
+class CircleController extends BaseController
 {
     /*
-     * 普通用户注册
+     *  获取圈子信息
      */
-    public function actionDoregister()
+    public function actionDetail()
     {
-        $username = Yii::$app->request->post('username');
-        $password = Yii::$app->request->post('password');
-        $mobile = Yii::$app->request->post('mobile');
-        $code = Yii::$app->request->post('code');
-        $email = Yii::$app->request->post('email');
-        $nickname = Yii::$app->request->post('nickname');
-        if ($mobile == null){
-            return  ['code'=>3,'msg'=>'手机号不能为空','time'=>time()];
-        }
-        if($code == null){
-            return  ['code'=>3,'msg'=>'验证码不能为空','time'=>time()];
-        }
-
-        $msgCount = (new Query())-> from('user_phonemsg')
-            ->where(['mobile'=>$mobile])
-            ->andWhere(['message_type' => 1])
-            ->andWhere(['message' => $code])
-            ->andWhere(['>','create_time', $this->getExpireTime()])
-            ->count();
-        if ($msgCount == 0){
-            return  ['code'=>3,'msg'=>'验证码不正确','time'=>time()];
-        }
-        if ($nickname == null){
-            $nickname = $username;
-        }
-        $model = new UserAccount();
-        $model->username = $username;
-        $model->password = md5($password);
-        $model->mobile = $mobile;
-        $model->email = $email;
-        $model->nickname = $username;
-        if($model->validate() == true && $model->save()){
-            $token = md5(''.$model['uid'].time());
-            $userInfo = $this->getUserDetail($model['uid']);
-            $session = Yii::$app->session;
-            if($session->isActive)
-            {
-            }else{
-                $session -> open();
-            }
-            $session[$token] = $userInfo;
-            $cookies = Yii::$app->response->cookies;
-            $cookies->remove('home_user_auth_auto_login');
-            $cookies->add(new \yii\web\Cookie([
-                'name' => 'home_user_auth_auto_login',
-                'value' => $token,
-                'expire'=>time() + 86400 * 7
-            ]));
-            //todo  保存第三方登录的token
-            return ['code'=>0,'msg'=>'保存成功','time'=>time(),'data'=>['uid'=>$model['uid'],'token'=>'test34343434']];
-        }
-        else{
-            return ['code'=>2,'msg'=>$model->getErrors(),'time'=>time()];
+        $uid = Yii::$app->request->post('uid');
+        $serivce = new CircleService();
+        $result = $serivce->getDetail($uid);
+        if ($result != null){
+            return  ['code'=>2,'msg'=>'','time'=>time(),'data'=>$result];
+        }else{
+            return  ['code'=>2,'msg'=>'没有找到用户','time'=>time()];
         }
     }
 
@@ -103,7 +56,7 @@ class UserController extends BaseController
         $msgResult = UserPhonemsg::find()
             ->where(['mobile'=>$mobile])
             ->andWhere(['message_type' => 1])
-            ->andWhere(['>','create_time', $this->getExpireTime()])
+            ->andWhere(['>','create_time', $this->getＥxpireTime()])
             ->orderBy('id desc')
             ->one();
         if ($msgResult != null){
@@ -285,20 +238,6 @@ class UserController extends BaseController
             return  ['code'=>0,'msg'=>'','time'=>time(),'data'=>['uid'=>$userInfo['uid'],'nickname'=>$userInfo['nickname'],'avatar'=>$userInfo['avatar'],'mobile'=>$userInfo['mobile']]];
         }
     }
-
-    /*
-     * 获取用户详情
-     */
-    public  function actionDetail(){
-        $uid = \yii::$app->request->post('uid');
-        $userDetail = $this->getUserDetail($uid);
-        if ($userDetail){
-            return  ['code'=>0,'msg'=>'','time'=>time(),'data'=>$userDetail];
-        }else{
-            return  ['code'=>2,'msg'=>'没有找到用户','time'=>time()];
-        }
-    }
-
 
     /*
      * 获取用户详情

@@ -16,6 +16,7 @@ use Yii;
  * @property integer $buy_or_sale
  * @property integer $area
  * @property string $area_title
+ * @property integer $category_id
  * @property string $category_name
  * @property string $category_title
  * @property integer $group_id
@@ -26,6 +27,11 @@ use Yii;
  * @property integer $pos
  * @property integer $flag
  * @property integer $sort
+ * @property string $tags
+ *
+ * @property DemandCategory $category
+ * @property DemandGroup $group
+ * @property UserAccount $u
  */
 class Demand extends \api\models\BaseModel
 {
@@ -43,16 +49,15 @@ class Demand extends \api\models\BaseModel
     public function rules()
     {
         return [
-            [['title', 'parse_content', 'uid'], 'required'],
-            [['view', 'number', 'buy_or_sale', 'area', 'group_id', 'uid', 'pos', 'flag', 'sort'], 'integer'],
+            [['title', 'category_id', 'parse_content', 'uid', 'tags'], 'required'],
+            [['view', 'number', 'buy_or_sale', 'area', 'category_id', 'group_id', 'uid', 'pos', 'flag', 'sort'], 'integer'],
             [['create_time'], 'safe'],
             [['price'], 'number'],
             [['parse_content'], 'string'],
             [['title', 'group_title'], 'string', 'max' => 100],
             [['unit', 'area_title'], 'string', 'max' => 20],
-            [['category_name'], 'string', 'max' => 4],
-            [['category_title'], 'string', 'max' => 200],
-            [['address'], 'string', 'max' => 255]
+            [['category_name', 'category_title'], 'string', 'max' => 200],
+            [['address', 'tags'], 'string', 'max' => 255]
         ];
     }
 
@@ -72,6 +77,7 @@ class Demand extends \api\models\BaseModel
             'buy_or_sale' => Yii::t('app', '供求标识(供1 求2)'),
             'area' => Yii::t('app', '地区'),
             'area_title' => Yii::t('app', '区名'),
+            'category_id' => Yii::t('app', '分类编号'),
             'category_name' => Yii::t('app', '分类英文名'),
             'category_title' => Yii::t('app', '类名'),
             'group_id' => Yii::t('app', '组编号'),
@@ -82,7 +88,32 @@ class Demand extends \api\models\BaseModel
             'pos' => Yii::t('app', '推荐'),
             'flag' => Yii::t('app', '状态(1为正常  0为下架)'),
             'sort' => Yii::t('app', '排序'),
+            'tags' => Yii::t('app', '标签'),
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategory()
+    {
+        return $this->hasOne(DemandCategory::className(), ['id' => 'category_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGroup()
+    {
+        return $this->hasOne(DemandGroup::className(), ['id' => 'group_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getU()
+    {
+        return $this->hasOne(UserAccount::className(), ['uid' => 'uid']);
     }
 
   /**
@@ -332,19 +363,42 @@ class Demand extends \api\models\BaseModel
                         'isSort' => true,
 //                         'udc'=>'',
                     ),
+		'category_id' => array(
+                        'name' => 'category_id',
+                        'allowNull' => false,
+//                         'autoIncrement' => false,
+//                         'comment' => '分类编号',
+//                         'dbType' => "int(11)",
+                        'defaultValue' => '',
+                        'enumValues' => null,
+                        'isPrimaryKey' => false,
+                        'phpType' => 'integer',
+                        'precision' => '11',
+                        'scale' => '',
+                        'size' => '11',
+                        'type' => 'integer',
+                        'unsigned' => false,
+                        'label'=>$this->getAttributeLabel('category_id'),
+                        'inputType' => 'text',
+                        'isEdit' => true,
+                        'isSearch' => false,
+                        'isDisplay' => true,
+                        'isSort' => true,
+//                         'udc'=>'',
+                    ),
 		'category_name' => array(
                         'name' => 'category_name',
                         'allowNull' => true,
 //                         'autoIncrement' => false,
 //                         'comment' => '分类英文名',
-//                         'dbType' => "varchar(4)",
+//                         'dbType' => "varchar(200)",
                         'defaultValue' => '',
                         'enumValues' => null,
                         'isPrimaryKey' => false,
                         'phpType' => 'string',
-                        'precision' => '4',
+                        'precision' => '200',
                         'scale' => '',
-                        'size' => '4',
+                        'size' => '200',
                         'type' => 'string',
                         'unsigned' => false,
                         'label'=>$this->getAttributeLabel('category_name'),
@@ -555,6 +609,29 @@ class Demand extends \api\models\BaseModel
                         'type' => 'bigint',
                         'unsigned' => false,
                         'label'=>$this->getAttributeLabel('sort'),
+                        'inputType' => 'text',
+                        'isEdit' => true,
+                        'isSearch' => false,
+                        'isDisplay' => true,
+                        'isSort' => true,
+//                         'udc'=>'',
+                    ),
+		'tags' => array(
+                        'name' => 'tags',
+                        'allowNull' => false,
+//                         'autoIncrement' => false,
+//                         'comment' => '标签',
+//                         'dbType' => "varchar(255)",
+                        'defaultValue' => '',
+                        'enumValues' => null,
+                        'isPrimaryKey' => false,
+                        'phpType' => 'string',
+                        'precision' => '255',
+                        'scale' => '',
+                        'size' => '255',
+                        'type' => 'string',
+                        'unsigned' => false,
+                        'label'=>$this->getAttributeLabel('tags'),
                         'inputType' => 'text',
                         'isEdit' => true,
                         'isSearch' => false,

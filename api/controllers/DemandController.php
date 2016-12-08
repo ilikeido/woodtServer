@@ -83,7 +83,7 @@ class DemandController extends BaseController
         $area = Yii::$app->request->post('area');
         $order = Yii::$app->request->post('order');
         $demandService = new DemandService();
-        $pagedata = $demandService->getPage($root,$p,$category,$group,$tag,$area,$order);
+        $pagedata = $demandService->getPage($root,$p,null,$category,$group,$tag,$area,$order);
         $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>$pagedata];
         return $result;
     }
@@ -111,7 +111,17 @@ class DemandController extends BaseController
         return $result;
     }
 
-
+    /*
+     * 获取用户的供求信息
+     */
+    public function actionGetlistbyuid(){
+        $uid = Yii::$app->request->post('uid');
+        $root = Yii::$app->request->post('root');
+        $p = Yii::$app->request->post('p');
+        $demandService = new DemandService();
+        $result = $demandService->getPage($root,$p,$uid);
+        return ['code'=>0,'msg'=>'','time'=>time(),'data'=>$result];
+    }
 
 
 

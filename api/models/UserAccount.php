@@ -50,7 +50,7 @@ class UserAccount extends \api\models\BaseModel
     public function rules()
     {
         return [
-            [['username', 'nickname', 'mobile', 'flag'], 'required'],
+            [['username', 'nickname', 'mobile'], 'required'],
             [['parse_content', 'content'], 'string'],
             [['score', 'is_auth', 'exp', 'demand_count', 'dynamic_count', 'attention_count', 'collection_count', 'fans_count', 'friend_count', 'notify_count', 'flag'], 'integer'],
             [['register_time', 'update_time'], 'safe'],
