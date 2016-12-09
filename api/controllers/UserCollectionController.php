@@ -21,7 +21,7 @@ use api\services\ReviewService;
 /**
  * TestController implements the CRUD actions for Test model.
  */
-class UserAttentionController extends BaseController
+class UserCollectionController extends BaseController
 {
     /*
      * 是否已关注某人
@@ -34,7 +34,7 @@ class UserAttentionController extends BaseController
             $serivce = new UserCollectionService();
             return  ['code'=>0,'msg'=>'','time'=>time(),'data'=>$serivce->collectionIsExits($userInfo['uid'],$tid)];
         }
-        return  ['code'=>2,'msg'=>'没有找到用户','time'=>time()];
+        return  ['code'=>2,'msg'=>'未登录','time'=>time()];
     }
 
 

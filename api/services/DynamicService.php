@@ -16,12 +16,12 @@ class DynamicService extends Demand {
     /*
      * 获取供求列表
      */
-    public function getPage($uid,$p=1,$keyword){
+    public function getPage($uid,$p=1,$keyword=''){
         $query = (new Query())->from('dynamic')->select(['id','uid','title','parse_content','create_time'])->where(['flag' => 1]);
-        if ($keyword != null){
+        if (!empty($keyword)){
             $query -> andWhere(['like','title',$keyword]);
         }
-        if ($uid != null){
+        if (!empty($uid)){
             $query -> andWhere(['uid'=>$uid]);
         }
         $pagination = new Pagination([

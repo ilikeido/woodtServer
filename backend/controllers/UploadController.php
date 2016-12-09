@@ -81,6 +81,28 @@ class UploadController extends Controller
         return ['code'=>1,'message'=>'上传失败'];
     }
 
+    public function actionCkimage(){
+        $model = new UploadForm();
+        if (Yii::$app->request->isPost) {
+            $callback = Yii::$app->request->getQueryParam('CKEditorFuncNum');
+            $model->file = UploadedFile::getInstance($model,'upload');
+            //文件上传存放的目录
+            $dir = '/Users/ilikeido/work/php/woodtServer/static/'.date("Ymd");
+            if (!is_dir($dir)){
+                mkdir($dir);
+            }
+            if ($model->validate()) {
+//文件名
+                $fileName = date("HiiHsHis").$model->file->baseName . "." . $model->file->extension;
+                $dir = $dir."/". $fileName;
+                $model->file->saveAs($dir);
+                $uploadSuccessPath = "http://static.testwoodt.com/".date("Ymd").'/'.$fileName;
+                echo "<script type=\"text/javascript\">" . "window.parent.CKEDITOR.tools.callFunction(" . $callback . ",'" . $uploadSuccessPath . "',''" . ")" . "</script>";
+            }
+        }
+    }
+
+
 //    public  function  mkdir($dir){
 //        \yii\helpers\FileHelper::createDirectory($dir,0777);
 //    }
