@@ -72,7 +72,7 @@ $modelLabel = new \backend\models\News();
               echo '<th onclick="orderby(\'id\', \'desc\')" '.CommonFun::sortClass($orderby, 'id').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('id').'</th>';
               echo '<th onclick="orderby(\'title\', \'desc\')" '.CommonFun::sortClass($orderby, 'title').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('title').'</th>';
               echo '<th onclick="orderby(\'description\', \'desc\')" '.CommonFun::sortClass($orderby, 'description').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('description').'</th>';
-              echo '<th onclick="orderby(\'category_id\', \'desc\')" '.CommonFun::sortClass($orderby, 'category_id').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('category_id').'</th>';
+              echo '<th onclick="orderby(\'category\', \'desc\')" '.CommonFun::sortClass($orderby, 'category').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('category').'</th>';
               echo '<th onclick="orderby(\'tags\', \'desc\')" '.CommonFun::sortClass($orderby, 'tags').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('tags').'</th>';
               echo '<th onclick="orderby(\'cover_id\', \'desc\')" '.CommonFun::sortClass($orderby, 'cover_id').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('cover_id').'</th>';
               echo '<th onclick="orderby(\'cover_thumb_url\', \'desc\')" '.CommonFun::sortClass($orderby, 'cover_thumb_url').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('cover_thumb_url').'</th>';
@@ -96,7 +96,7 @@ $modelLabel = new \backend\models\News();
                 echo '  <td>' . $model->id . '</td>';
                 echo '  <td>' . $model->title . '</td>';
                 echo '  <td>' . $model->description . '</td>';
-                echo '  <td>' . $model->category_id . '</td>';
+                echo '  <td>' . $model->category . '</td>';
                 echo '  <td>' . $model->tags . '</td>';
                 echo '  <td>' . $model->cover_id . '</td>';
                 echo '  <td>' . $model->cover_thumb_url . '</td>';
@@ -187,10 +187,10 @@ $modelLabel = new \backend\models\News();
               <div class="clearfix"></div>
           </div>
 
-          <div id="category_id_div" class="form-group">
-              <label for="category_id" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("category_id")?></label>
+          <div id="category_div" class="form-group">
+              <label for="category" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("category")?></label>
               <div class="col-sm-10">
-				  <select class="form-control" name="News[category_id]" id="category_id">
+				  <select class="form-control" name="News[category]" id="category">
 					  <option>请选择</option>
 					  <?php
 
@@ -295,7 +295,7 @@ function orderby(field, op){
 		$("#id").val('');
 		$("#title").val('');
 		$("#description").val('点木通');
-		$("#category_id").val('');
+		$("#category").val('');
 		$("#tags").val('');
 		$("#cover_id").val('');
 		$("#cover_thumb_url").val('');
@@ -305,19 +305,18 @@ function orderby(field, op){
 		$("#id").val(data.id);
     	$("#title").val(data.title);
     	$("#description").val(data.description);
-    	$("#category_id").val(data.category_id);
+    	$("#category").val(data.category);
     	$("#tags").val(data.tags);
     	$("#cover_id").val(data.cover_id);
     	$("#cover_thumb_url").val(data.cover_thumb_url);
     	$("#parse_content").val(data.parse_content);
 		$("#editor").val(data.parse_content);
-		initEditIconAction(data.cover_thumb_url);
     	}
 	if(type == "view"){
       $("#id").attr({readonly:true,disabled:true});
       $("#title").attr({readonly:true,disabled:true});
       $("#description").attr({readonly:true,disabled:true});
-      $("#category_id").attr({readonly:true,disabled:true});
+      $("#category").attr({readonly:true,disabled:true});
       $("#tags").attr({readonly:true,disabled:true});
       $("#parse_content").attr({readonly:true,disabled:true});
 		$('#edit_dialog_ok').addClass('hidden');
@@ -327,7 +326,7 @@ function orderby(field, op){
       $("#id").attr({readonly:false,disabled:false});
       $("#title").attr({readonly:false,disabled:false});
       $("#description").attr({readonly:false,disabled:false});
-      $("#category_id").attr({readonly:false,disabled:false});
+      $("#category").attr({readonly:false,disabled:false});
       $("#tags").attr({readonly:false,disabled:false});
       $("#parse_content").attr({readonly:false,disabled:false});
 		$('#edit_dialog_ok').removeClass('hidden');

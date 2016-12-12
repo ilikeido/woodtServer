@@ -95,8 +95,14 @@ class DemandController extends BaseController
         $id = Yii::$app->request->post('id');
         $demandService = new DemandService();
         $demand = $demandService->getDetail($id);
-        $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>$demand];
-        return $result;
+        if ($demand != null){
+            $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>$demand];
+            $model = DemandService::findOne($id);
+            $model['view'] = $model['view'] + 1;
+            $model->save();
+            return $result;
+        }
+        return ['code'=>2,'msg'=>'找不到该数据','time'=>time()];
     }
 
     /*

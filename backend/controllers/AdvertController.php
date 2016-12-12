@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\AdvertCategory;
 use Yii;
 use yii\data\Pagination;
 use backend\models\Advert;
@@ -55,9 +56,15 @@ class AdvertController extends BaseController
         $orderby = Yii::$app->request->get('orderby', '');
         if(empty($orderby) == false){
             $query = $query->orderBy($orderby);
+        }else{
+            $query = $query->orderBy('level desc,id desc');
         }
-        
-        
+        $categorys = AdvertCategory::find()->all();
+        $categoryDatas = array();
+        foreach ($categorys as $item){
+            $categoryDatas[$item['id']] = $item['title'];
+        }
+
         $models = $query
         ->offset($pagination->offset)
         ->limit($pagination->limit)
@@ -66,6 +73,7 @@ class AdvertController extends BaseController
             'models'=>$models,
             'pages'=>$pagination,
             'query'=>$querys,
+            'categorys'=>$categoryDatas,
         ]);
     }
 
@@ -90,7 +98,14 @@ class AdvertController extends BaseController
     {
         $model = new Advert();
         if ($model->load(Yii::$app->request->post())) {
-        
+
+            if (!empty($model->category_id)){
+                $category = AdvertCategory::find()->where(['id'=>$model->category_id])->one();
+                if ($category){
+                    $model->category_name = $category['name'];
+                    $model->category_title = $category['title'];
+                }
+            }
         
             if($model->validate() == true && $model->save()){
                 $msg = array('errno'=>0, 'msg'=>'保存成功');

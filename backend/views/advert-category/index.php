@@ -6,15 +6,13 @@ use yii\bootstrap\ActiveForm;
 use common\utils\CommonFun;
 use yii\helpers\Url;
 
-use backend\models\Advert;
+use backend\models\AdvertCategory;
 
-$modelLabel = new \backend\models\Advert();
+$modelLabel = new \backend\models\AdvertCategory();
 ?>
 
 <?php $this->beginBlock('header');  ?>
-<script src="<?=Url::base()?>/plugins/bootstrap-fileinput/fileinput.min.js"></script>
-<link rel="stylesheet" href="<?=Url::base()?>/plugins/bootstrap-fileinput/fileinput.min.css">
-<script src="<?=Url::base()?>/plugins/bootstrap-fileinput/locales/zh.js"></script>
+<!-- <head></head>中代码块 -->
 <?php $this->endBlock(); ?>
 
 <!-- Main content -->
@@ -40,7 +38,7 @@ $modelLabel = new \backend\models\Advert();
             <!-- row start search-->
           	<div class="row">
           	<div class="col-sm-12">
-                <?php ActiveForm::begin(['id' => 'advert-search-form', 'method'=>'get', 'options' => ['class' => 'form-inline'], 'action'=>Url::toRoute('advert/index')]); ?>     
+                <?php ActiveForm::begin(['id' => 'advert-category-search-form', 'method'=>'get', 'options' => ['class' => 'form-inline'], 'action'=>Url::toRoute('advert-category/index')]); ?>     
                 
                   <div class="form-group" style="margin: 5px;">
                       <label><?=$modelLabel->getAttributeLabel('id')?>:</label>
@@ -65,13 +63,11 @@ $modelLabel = new \backend\models\Advert();
               $orderby = isset($_GET['orderby']) ? $_GET['orderby'] : '';
 		      echo '<th><input id="data_table_check" type="checkbox"></th>';
               echo '<th onclick="orderby(\'id\', \'desc\')" '.CommonFun::sortClass($orderby, 'id').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('id').'</th>';
+              echo '<th onclick="orderby(\'name\', \'desc\')" '.CommonFun::sortClass($orderby, 'name').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('name').'</th>';
               echo '<th onclick="orderby(\'title\', \'desc\')" '.CommonFun::sortClass($orderby, 'title').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('title').'</th>';
-              echo '<th onclick="orderby(\'description\', \'desc\')" '.CommonFun::sortClass($orderby, 'description').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('description').'</th>';
-              echo '<th onclick="orderby(\'level\', \'desc\')" '.CommonFun::sortClass($orderby, 'level').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('level').'</th>';
-              echo '<th onclick="orderby(\'goto\', \'desc\')" '.CommonFun::sortClass($orderby, 'goto').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('goto').'</th>';
-              echo '<th onclick="orderby(\'record_id\', \'desc\')" '.CommonFun::sortClass($orderby, 'record_id').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('record_id').'</th>';
-              echo '<th onclick="orderby(\'category_title\', \'desc\')" '.CommonFun::sortClass($orderby, 'category_title').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('category_title').'</th>';
-              echo '<th onclick="orderby(\'banner_url\', \'desc\')" '.CommonFun::sortClass($orderby, 'banner_url').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('banner_url').'</th>';
+              echo '<th onclick="orderby(\'descript\', \'desc\')" '.CommonFun::sortClass($orderby, 'descript').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('descript').'</th>';
+              echo '<th onclick="orderby(\'ios_size\', \'desc\')" '.CommonFun::sortClass($orderby, 'ios_size').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('ios_size').'</th>';
+              echo '<th onclick="orderby(\'android_size\', \'desc\')" '.CommonFun::sortClass($orderby, 'android_size').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('android_size').'</th>';
          
 			?>
 	
@@ -85,13 +81,11 @@ $modelLabel = new \backend\models\Advert();
                 echo '<tr id="rowid_' . $model->id . '">';
                 echo '  <td><label><input type="checkbox" value="' . $model->id . '"></label></td>';
                 echo '  <td>' . $model->id . '</td>';
+                echo '  <td>' . $model->name . '</td>';
                 echo '  <td>' . $model->title . '</td>';
-                echo '  <td>' . $model->description . '</td>';
-                echo '  <td>' . $model->level . '</td>';
-                echo '  <td>' . $model->goto . '</td>';
-                echo '  <td>' . $model->record_id . '</td>';
-                echo '  <td>' . $model->category_title . '</td>';
-                echo '  <td>' . $model->banner_url . '</td>';
+                echo '  <td>' . $model->descript . '</td>';
+                echo '  <td>' . $model->ios_size . '</td>';
+                echo '  <td>' . $model->android_size . '</td>';
                 echo '  <td class="center">';
                 echo '      <a id="view_btn" onclick="viewAction(' . $model->id . ')" class="btn btn-primary btn-sm" href="#"> <i class="glyphicon glyphicon-zoom-in icon-white"></i>查看</a>';
                 echo '      <a id="edit_btn" onclick="editAction(' . $model->id . ')" class="btn btn-primary btn-sm" href="#"> <i class="glyphicon glyphicon-edit icon-white"></i>修改</a>';
@@ -154,71 +148,46 @@ $modelLabel = new \backend\models\Advert();
 				<h3>Settings</h3>
 			</div>
 			<div class="modal-body">
-                <?php $form = ActiveForm::begin(["id" => "advert-form", "class"=>"form-horizontal", "action"=>Url::toRoute("advert/save")]); ?>                      
+                <?php $form = ActiveForm::begin(["id" => "advert-category-form", "class"=>"form-horizontal", "action"=>Url::toRoute("advert-category/save")]); ?>                      
                  
-          <input type="hidden" class="form-control" id="id" name="Advert[id]" />
+          <input type="hidden" class="form-control" id="id" name="AdvertCategory[id]" />
+
+          <div id="name_div" class="form-group">
+              <label for="name" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("name")?></label>
+              <div class="col-sm-10">
+                  <input type="text" class="form-control" id="name" name="AdvertCategory[name]" placeholder="必填" />
+              </div>
+              <div class="clearfix"></div>
+          </div>
 
           <div id="title_div" class="form-group">
               <label for="title" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("title")?></label>
               <div class="col-sm-10">
-                  <input type="text" class="form-control" id="title" name="Advert[title]" placeholder="必填" />
+                  <input type="text" class="form-control" id="title" name="AdvertCategory[title]" placeholder="必填" />
               </div>
               <div class="clearfix"></div>
           </div>
 
-          <div id="description_div" class="form-group">
-              <label for="description" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("description")?></label>
+          <div id="descript_div" class="form-group">
+              <label for="descript" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("descript")?></label>
               <div class="col-sm-10">
-                  <input type="text" class="form-control" id="description" name="Advert[description]" placeholder="必填" />
-              </div>
-              <div class="clearfix"></div>
-          </div>
-			<div id="category_id_div" class="form-group">
-				<label for="category_id" class="col-sm-2 control-label">广告位</label>
-				<div class="col-sm-10">
-					<select class="form-control" name="Advert[category_id]" id="category_id">
-						<option>请选择</option>
-						<?php
-						foreach($categorys as $key=>$data){
-							echo "<option value='" . $key . "'>". $data."</option>";
-						}
-						?>
-					</select>
-				</div>
-				<div class="clearfix"></div>
-			</div>
-          <div id="level_div" class="form-group">
-              <label for="level" class="col-sm-2 control-label">优先级</label>
-              <div class="col-sm-10">
-                  <input type="text" class="form-control" id="level" name="Advert[level]" placeholder="必填,值越高排越前" />
+                  <input type="text" class="form-control" id="descript" name="AdvertCategory[descript]" placeholder="" />
               </div>
               <div class="clearfix"></div>
           </div>
 
-          <div id="goto_div" class="form-group">
-              <label for="goto" class="col-sm-2 control-label">跳转内容</label>
+          <div id="ios_size_div" class="form-group">
+              <label for="ios_size" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("ios_size")?></label>
               <div class="col-sm-10">
-				  <select class="form-control" name="Advert[goto]" id="goto">
-					  <option>请选择</option>
-					  <option value="news">新闻</option>
-					  <option value="demand">供求</option>
-				  </select>
+                  <input type="text" class="form-control" id="ios_size" name="AdvertCategory[ios_size]" placeholder="必填" />
               </div>
               <div class="clearfix"></div>
           </div>
 
-          <div id="record_id_div" class="form-group">
-              <label for="record_id" class="col-sm-2 control-label">内容</label>
+          <div id="android_size_div" class="form-group">
+              <label for="android_size" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("android_size")?></label>
               <div class="col-sm-10">
-                  <input type="text" class="form-control" id="record_id" name="Advert[record_id]" placeholder="供求或新闻：填写相应的内容编号" />
-              </div>
-              <div class="clearfix"></div>
-          </div>
-          <div id="banner_url_div" class="form-group">
-              <label for="banner_url" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("banner_url")?></label>
-              <div class="col-sm-10">
-				  <input type="hidden" class="form-control" id="banner_url" name="Advert[banner_url]" placeholder="" />
-				  <input id="input-image" name="file" type="file" multiple class="file-loading" accept="image/*">
+                  <input type="text" class="form-control" id="android_size" name="AdvertCategory[android_size]" placeholder="必填" />
               </div>
               <div class="clearfix"></div>
           </div>
@@ -234,19 +203,7 @@ $modelLabel = new \backend\models\Advert();
 	</div>
 </div>
 <?php $this->beginBlock('footer');  ?>
-<style>
-	.kv-avatar .file-preview-frame,.kv-avatar .file-preview-frame:hover {
-		margin: 0;
-		padding: 0;
-		border: none;
-		box-shadow: none;
-		text-align: center;
-	}
-	.kv-avatar .file-input {
-		display: table-cell;
-		max-width: 220px;
-	}
-</style>
+<!-- <body></body>后代码块 -->
  <script>
 function orderby(field, op){
 	 var url = window.location.search;
@@ -269,97 +226,56 @@ function orderby(field, op){
 	 window.location.href=url; 
  }
  function searchAction(){
-		$('#advert-search-form').submit();
+		$('#advert-category-search-form').submit();
 	}
  function viewAction(id){
 		initModel(id, 'view', 'fun');
 	}
 
-function initEditBannerUrlAction($image_url) {
-	$("#input-image").fileinput({
-		language: 'zh',
-		uploadUrl: "/upload/image",
-		overwriteInitial: true,
-//		maxFileSize: 1500,
-		maxImageWidth: 640,
-		maxImageHeight: 300,
-		resizeImage: true,
-		showClose: false,
-		showCaption: false,
-		browseOnZoneClick: true,
-		browseLabel: '',
-		removeLabel: '',
-		browseIcon: '<i class="glyphicon glyphicon-folder-open"></i>',
-		removeIcon: '<i class="glyphicon glyphicon-remove"></i>',
-		removeTitle: '取消或重置',
-		elErrorContainer: '#kv-avatar-errors-1',
-		msgErrorClass: 'alert alert-block alert-danger',
-		defaultPreviewContent: '<img src="' + $image_url + '" alt="图标" style="width:150px">',
-		layoutTemplates: {main2: '{preview}{remove}{browse}'},
-		allowedFileExtensions: ["jpg", "png", "gif"]
-	}).on('filepreupload', function() {
-		$('#banner_url').val('');
-	}).on('fileuploaded', function(event, data) {
-		$('#banner_url').val(data.response.link);
-	});
-}
-
  function initEditSystemModule(data, type){
 	if(type == 'create'){
 		$("#id").val('');
+		$("#name").val('');
 		$("#title").val('');
-		$("#description").val('');
-		$("#level").val('0');
-		$("#goto").val('');
-		$("#record_id").val('');
-		$("#category_id").val('');
-		$("#category_name").val('');
-		$("#category_title").val('');
-		$("#banner_url").val('');
+		$("#descript").val('');
+		$("#ios_size").val('');
+		$("#android_size").val('');
+		
 	}
 	else{
 		$("#id").val(data.id);
+    	$("#name").val(data.name);
     	$("#title").val(data.title);
-    	$("#description").val(data.description);
-    	$("#level").val(data.level);
-    	$("#goto").val(data.goto);
-    	$("#record_id").val(data.record_id);
-    	$("#category_id").val(data.category_id);
-    	$("#banner_url").val(data.banner_url);
+    	$("#descript").val(data.descript);
+    	$("#ios_size").val(data.ios_size);
+    	$("#android_size").val(data.android_size);
     	}
 	if(type == "view"){
       $("#id").attr({readonly:true,disabled:true});
+      $("#name").attr({readonly:true,disabled:true});
       $("#title").attr({readonly:true,disabled:true});
-      $("#description").attr({readonly:true,disabled:true});
-      $("#level").attr({readonly:true,disabled:true});
-      $("#goto").attr({readonly:true,disabled:true});
-      $("#record_id").attr({readonly:true,disabled:true});
-      $("#category_id").attr({readonly:true,disabled:true});
-      $("#banner_url").attr({readonly:true,disabled:true});
+      $("#descript").attr({readonly:true,disabled:true});
+      $("#ios_size").attr({readonly:true,disabled:true});
+      $("#android_size").attr({readonly:true,disabled:true});
 	$('#edit_dialog_ok').addClass('hidden');
 	}
 	else{
       $("#id").attr({readonly:false,disabled:false});
+      $("#name").attr({readonly:false,disabled:false});
       $("#title").attr({readonly:false,disabled:false});
-      $("#description").attr({readonly:false,disabled:false});
-      $("#level").attr({readonly:false,disabled:false});
-      $("#goto").attr({readonly:false,disabled:false});
-      $("#record_id").attr({readonly:false,disabled:false});
-      $("#category_id").attr({readonly:false,disabled:false});
-      $("#banner_url").attr({readonly:false,disabled:false});
+      $("#descript").attr({readonly:false,disabled:false});
+      $("#ios_size").attr({readonly:false,disabled:false});
+      $("#android_size").attr({readonly:false,disabled:false});
 		$('#edit_dialog_ok').removeClass('hidden');
 		}
-
 		$('#edit_dialog').modal('show');
-	 initEditBannerUrlAction(data.banner_url);
-
 }
 
 function initModel(id, type, fun){
 	
 	$.ajax({
 		   type: "GET",
-		   url: "<?=Url::toRoute('advert/view')?>",
+		   url: "<?=Url::toRoute('advert-category/view')?>",
 		   data: {"id":id},
 		   cache: false,
 		   dataType:"json",
@@ -397,7 +313,7 @@ function deleteAction(id){
 		admin_tool.confirm('请确认是否删除', function(){
 		    $.ajax({
 				   type: "GET",
-				   url: "<?=Url::toRoute('advert/delete')?>",
+				   url: "<?=Url::toRoute('advert-category/delete')?>",
 				   data: {"ids":ids},
 				   cache: false,
 				   dataType:"json",
@@ -440,7 +356,7 @@ function getSelectedIdValues(formId)
 
 $('#edit_dialog_ok').click(function (e) {
     e.preventDefault();
-	$('#advert-form').submit();
+	$('#advert-category-form').submit();
 });
 
 $('#create_btn').click(function (e) {
@@ -453,10 +369,10 @@ $('#delete_btn').click(function (e) {
     deleteAction('');
 });
 
-$('#advert-form').bind('submit', function(e) {
+$('#advert-category-form').bind('submit', function(e) {
 	e.preventDefault();
 	var id = $("#id").val();
-	var action = id == "" ? "<?=Url::toRoute('advert/create')?>" : "<?=Url::toRoute('advert/update')?>";
+	var action = id == "" ? "<?=Url::toRoute('advert-category/create')?>" : "<?=Url::toRoute('advert-category/update')?>";
     $(this).ajaxSubmit({
     	type: "post",
     	dataType:"json",

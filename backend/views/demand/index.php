@@ -43,6 +43,8 @@ $modelLabel = new \backend\models\Demand();
                   <div class="form-group" style="margin: 5px;">
                       <label><?=$modelLabel->getAttributeLabel('id')?>:</label>
                       <input type="text" class="form-control" id="query[id]" name="query[id]"  value="<?=isset($query["id"]) ? $query["id"] : "" ?>">
+					  <input type="text" class="form-control" id="query[uid]" name="query[uid]"  value="<?=isset($query["uid"]) ? $query["uid"] : "" ?>">
+
                   </div>
               <div class="form-group">
               	<a onclick="searchAction()" class="btn btn-primary btn-sm" href="#"> <i class="glyphicon glyphicon-zoom-in icon-white"></i>搜索</a>
@@ -70,20 +72,13 @@ $modelLabel = new \backend\models\Demand();
               echo '<th onclick="orderby(\'unit\', \'desc\')" '.CommonFun::sortClass($orderby, 'unit').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('unit').'</th>';
               echo '<th onclick="orderby(\'number\', \'desc\')" '.CommonFun::sortClass($orderby, 'number').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('number').'</th>';
               echo '<th onclick="orderby(\'buy_or_sale\', \'desc\')" '.CommonFun::sortClass($orderby, 'buy_or_sale').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('buy_or_sale').'</th>';
-              echo '<th onclick="orderby(\'area\', \'desc\')" '.CommonFun::sortClass($orderby, 'area').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('area').'</th>';
               echo '<th onclick="orderby(\'area_title\', \'desc\')" '.CommonFun::sortClass($orderby, 'area_title').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('area_title').'</th>';
-              echo '<th onclick="orderby(\'category_name\', \'desc\')" '.CommonFun::sortClass($orderby, 'category_name').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('category_name').'</th>';
               echo '<th onclick="orderby(\'category_title\', \'desc\')" '.CommonFun::sortClass($orderby, 'category_title').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('category_title').'</th>';
-              echo '<th onclick="orderby(\'group_id\', \'desc\')" '.CommonFun::sortClass($orderby, 'group_id').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('group_id').'</th>';
               echo '<th onclick="orderby(\'group_title\', \'desc\')" '.CommonFun::sortClass($orderby, 'group_title').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('group_title').'</th>';
-              echo '<th onclick="orderby(\'address\', \'desc\')" '.CommonFun::sortClass($orderby, 'address').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('address').'</th>';
-              echo '<th onclick="orderby(\'parse_content\', \'desc\')" '.CommonFun::sortClass($orderby, 'parse_content').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('parse_content').'</th>';
-              echo '<th onclick="orderby(\'uid\', \'desc\')" '.CommonFun::sortClass($orderby, 'uid').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('uid').'</th>';
               echo '<th onclick="orderby(\'pos\', \'desc\')" '.CommonFun::sortClass($orderby, 'pos').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('pos').'</th>';
               echo '<th onclick="orderby(\'flag\', \'desc\')" '.CommonFun::sortClass($orderby, 'flag').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('flag').'</th>';
               echo '<th onclick="orderby(\'sort\', \'desc\')" '.CommonFun::sortClass($orderby, 'sort').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('sort').'</th>';
-         
-			?>
+              ?>
 	
             <th tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >操作</th>
             </tr>
@@ -102,17 +97,11 @@ $modelLabel = new \backend\models\Demand();
                 echo '  <td>' . $model->unit . '</td>';
                 echo '  <td>' . $model->number . '</td>';
                 echo '  <td>' . $model->buy_or_sale . '</td>';
-                echo '  <td>' . $model->area . '</td>';
                 echo '  <td>' . $model->area_title . '</td>';
-                echo '  <td>' . $model->category_name . '</td>';
                 echo '  <td>' . $model->category_title . '</td>';
-                echo '  <td>' . $model->group_id . '</td>';
                 echo '  <td>' . $model->group_title . '</td>';
-                echo '  <td>' . $model->address . '</td>';
-                echo '  <td>' . $model->parse_content . '</td>';
-                echo '  <td>' . $model->uid . '</td>';
-                echo '  <td>' . $model->pos . '</td>';
-                echo '  <td>' . $model->flag . '</td>';
+                echo '  <td> <a onclick="posAction(' . $model->id .',this)">' . ($model->pos===1?'推荐':'非推荐') . '</a></td>';
+                echo '  <td> <a onclick="disableAction(' .$model->id . ',this)">' . ($model->flag===1?'正常':'禁用') . '</a></td>';
                 echo '  <td>' . $model->sort . '</td>';
                 echo '  <td class="center">';
                 echo '      <a id="view_btn" onclick="viewAction(' . $model->id . ')" class="btn btn-primary btn-sm" href="#"> <i class="glyphicon glyphicon-zoom-in icon-white"></i>查看</a>';
@@ -188,22 +177,6 @@ $modelLabel = new \backend\models\Demand();
               <div class="clearfix"></div>
           </div>
 
-          <div id="view_div" class="form-group">
-              <label for="view" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("view")?></label>
-              <div class="col-sm-10">
-                  <input type="text" class="form-control" id="view" name="Demand[view]" placeholder="" />
-              </div>
-              <div class="clearfix"></div>
-          </div>
-
-          <div id="create_time_div" class="form-group">
-              <label for="create_time" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("create_time")?></label>
-              <div class="col-sm-10">
-                  <input type="text" class="form-control" id="create_time" name="Demand[create_time]" placeholder="" />
-              </div>
-              <div class="clearfix"></div>
-          </div>
-
           <div id="price_div" class="form-group">
               <label for="price" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("price")?></label>
               <div class="col-sm-10">
@@ -239,31 +212,29 @@ $modelLabel = new \backend\models\Demand();
           <div id="area_div" class="form-group">
               <label for="area" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("area")?></label>
               <div class="col-sm-10">
-                  <input type="text" class="form-control" id="area" name="Demand[area]" placeholder="" />
+				  <select class="form-control" name="Demand[area]" id="area">
+					  <option>请选择</option>
+					  <?php
+					  foreach($areas as $key=>$data){
+						  echo "<option value='" . $key . "'>". $data."</option>";
+					  }
+					  ?>
+				  </select>
               </div>
               <div class="clearfix"></div>
           </div>
 
-          <div id="area_title_div" class="form-group">
-              <label for="area_title" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("area_title")?></label>
+          <div id="category_id_div" class="form-group">
+              <label for="category_name" class="col-sm-2 control-label">分类</label>
               <div class="col-sm-10">
-                  <input type="text" class="form-control" id="area_title" name="Demand[area_title]" placeholder="" />
-              </div>
-              <div class="clearfix"></div>
-          </div>
-
-          <div id="category_name_div" class="form-group">
-              <label for="category_name" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("category_name")?></label>
-              <div class="col-sm-10">
-                  <input type="text" class="form-control" id="category_name" name="Demand[category_name]" placeholder="" />
-              </div>
-              <div class="clearfix"></div>
-          </div>
-
-          <div id="category_title_div" class="form-group">
-              <label for="category_title" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("category_title")?></label>
-              <div class="col-sm-10">
-                  <input type="text" class="form-control" id="category_title" name="Demand[category_title]" placeholder="" />
+				  <select class="form-control" name="Demand[category_id]" id="category_id">
+					  <option>请选择</option>
+					  <?php
+					  foreach($categorys as $key=>$data){
+						  echo "<option value='" . $key . "'>". $data."</option>";
+					  }
+					  ?>
+				  </select>
               </div>
               <div class="clearfix"></div>
           </div>
@@ -271,15 +242,9 @@ $modelLabel = new \backend\models\Demand();
           <div id="group_id_div" class="form-group">
               <label for="group_id" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("group_id")?></label>
               <div class="col-sm-10">
-                  <input type="text" class="form-control" id="group_id" name="Demand[group_id]" placeholder="" />
-              </div>
-              <div class="clearfix"></div>
-          </div>
-
-          <div id="group_title_div" class="form-group">
-              <label for="group_title" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("group_title")?></label>
-              <div class="col-sm-10">
-                  <input type="text" class="form-control" id="group_title" name="Demand[group_title]" placeholder="" />
+				  <select class="form-control" name="Demand[group_id]" id="group_id">
+					  <option>请选择</option>
+				  </select>
               </div>
               <div class="clearfix"></div>
           </div>
@@ -300,30 +265,6 @@ $modelLabel = new \backend\models\Demand();
               <div class="clearfix"></div>
           </div>
 
-          <div id="uid_div" class="form-group">
-              <label for="uid" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("uid")?></label>
-              <div class="col-sm-10">
-                  <input type="text" class="form-control" id="uid" name="Demand[uid]" placeholder="必填" />
-              </div>
-              <div class="clearfix"></div>
-          </div>
-
-          <div id="pos_div" class="form-group">
-              <label for="pos" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("pos")?></label>
-              <div class="col-sm-10">
-                  <input type="text" class="form-control" id="pos" name="Demand[pos]" placeholder="必填" />
-              </div>
-              <div class="clearfix"></div>
-          </div>
-
-          <div id="flag_div" class="form-group">
-              <label for="flag" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("flag")?></label>
-              <div class="col-sm-10">
-                  <input type="text" class="form-control" id="flag" name="Demand[flag]" placeholder="必填" />
-              </div>
-              <div class="clearfix"></div>
-          </div>
-
           <div id="sort_div" class="form-group">
               <label for="sort" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("sort")?></label>
               <div class="col-sm-10">
@@ -331,7 +272,6 @@ $modelLabel = new \backend\models\Demand();
               </div>
               <div class="clearfix"></div>
           </div>
-                    
 
 			<?php ActiveForm::end(); ?>          
                 </div>
@@ -372,6 +312,50 @@ function orderby(field, op){
 		initModel(id, 'view', 'fun');
 	}
 
+ function posAction(id,even){
+     $.ajax({
+         type: "GET",
+         url: "<?=Url::toRoute('demand/pos')?>" + "?id=" + id,
+         cache: false,
+         dataType:"json",
+         error: function (xmlHttpRequest, textStatus, errorThrown) {
+             admin_tool.alert('msg_info', '出错了，' + textStatus, 'warning');
+         },
+         success: function(data){
+             if (data.errno == 0){
+             	if(data.pos==0){
+					$(even).html('非推荐');
+				}else{
+					$(even).html('推荐');
+				}
+
+             }
+         }
+     });
+ }
+
+function disableAction(id,even){
+	$.ajax({
+		type: "GET",
+		url: "<?=Url::toRoute('demand/disable')?>" + "?id=" + id,
+		cache: false,
+		dataType:"json",
+		error: function (xmlHttpRequest, textStatus, errorThrown) {
+			admin_tool.alert('msg_info', '出错了，' + textStatus, 'warning');
+		},
+		success: function(data){
+			if (data.errno == 0){
+				if(data.pos==0){
+					$(even).html('禁用');
+				}else{
+					$(even).html('正常');
+				}
+
+			}
+		}
+	});
+}
+
  function initEditSystemModule(data, type){
 	if(type == 'create'){
 		$("#id").val('');
@@ -383,18 +367,12 @@ function orderby(field, op){
 		$("#number").val('');
 		$("#buy_or_sale").val('');
 		$("#area").val('');
-		$("#area_title").val('');
-		$("#category_name").val('');
-		$("#category_title").val('');
+		$("#category_id").val('');
 		$("#group_id").val('');
-		$("#group_title").val('');
 		$("#address").val('');
 		$("#parse_content").val('');
 		$("#uid").val('');
-		$("#pos").val('');
-		$("#flag").val('');
 		$("#sort").val('');
-		
 	}
 	else{
 		$("#id").val(data.id);
@@ -406,17 +384,13 @@ function orderby(field, op){
     	$("#number").val(data.number);
     	$("#buy_or_sale").val(data.buy_or_sale);
     	$("#area").val(data.area);
-    	$("#area_title").val(data.area_title);
-    	$("#category_name").val(data.category_name);
-    	$("#category_title").val(data.category_title);
+    	$("#category_id").val(data.category_id);
     	$("#group_id").val(data.group_id);
-    	$("#group_title").val(data.group_title);
     	$("#address").val(data.address);
     	$("#parse_content").val(data.parse_content);
     	$("#uid").val(data.uid);
-    	$("#pos").val(data.pos);
-    	$("#flag").val(data.flag);
     	$("#sort").val(data.sort);
+		getGroupAction(data.category_id);
     	}
 	if(type == "view"){
       $("#id").attr({readonly:true,disabled:true});
@@ -428,16 +402,11 @@ function orderby(field, op){
       $("#number").attr({readonly:true,disabled:true});
       $("#buy_or_sale").attr({readonly:true,disabled:true});
       $("#area").attr({readonly:true,disabled:true});
-      $("#area_title").attr({readonly:true,disabled:true});
-      $("#category_name").attr({readonly:true,disabled:true});
-      $("#category_title").attr({readonly:true,disabled:true});
+      $("#category_id").attr({readonly:true,disabled:true});
       $("#group_id").attr({readonly:true,disabled:true});
-      $("#group_title").attr({readonly:true,disabled:true});
       $("#address").attr({readonly:true,disabled:true});
       $("#parse_content").attr({readonly:true,disabled:true});
       $("#uid").attr({readonly:true,disabled:true});
-      $("#pos").attr({readonly:true,disabled:true});
-      $("#flag").attr({readonly:true,disabled:true});
       $("#sort").attr({readonly:true,disabled:true});
 	$('#edit_dialog_ok').addClass('hidden');
 	}
@@ -451,16 +420,11 @@ function orderby(field, op){
       $("#number").attr({readonly:false,disabled:false});
       $("#buy_or_sale").attr({readonly:false,disabled:false});
       $("#area").attr({readonly:false,disabled:false});
-      $("#area_title").attr({readonly:false,disabled:false});
-      $("#category_name").attr({readonly:false,disabled:false});
-      $("#category_title").attr({readonly:false,disabled:false});
+      $("#category_id").attr({readonly:false,disabled:false});
       $("#group_id").attr({readonly:false,disabled:false});
-      $("#group_title").attr({readonly:false,disabled:false});
       $("#address").attr({readonly:false,disabled:false});
       $("#parse_content").attr({readonly:false,disabled:false});
       $("#uid").attr({readonly:false,disabled:false});
-      $("#pos").attr({readonly:false,disabled:false});
-      $("#flag").attr({readonly:false,disabled:false});
       $("#sort").attr({readonly:false,disabled:false});
 		$('#edit_dialog_ok').removeClass('hidden');
 		}
@@ -468,7 +432,6 @@ function orderby(field, op){
 }
 
 function initModel(id, type, fun){
-	
 	$.ajax({
 		   type: "GET",
 		   url: "<?=Url::toRoute('demand/view')?>",
@@ -564,6 +527,39 @@ $('#delete_btn').click(function (e) {
     e.preventDefault();
     deleteAction('');
 });
+
+$("#category_id").change(function(){
+	var categoryid=$(this).children('option:selected').val();
+	getGroupAction(categoryid);
+});
+
+function getGroupAction(category_id,defaultValue){
+	$.ajax({
+		type: "GET",
+		url: "<?=Url::toRoute('demand/groups')?>" + "?id=" + category_id,
+		cache: false,
+		dataType:"json",
+		error: function (xmlHttpRequest, textStatus, errorThrown) {
+			admin_tool.alert('msg_info', '出错了，' + textStatus, 'warning');
+		},
+		success: function(data){
+			$("#group_id").empty();
+			//循环添加
+			for(var i = 0; i < data.groups.length; i++) {
+				var group = data.groups[i];
+				if(group['id'] == defaultValue){
+					var option = $("<option>").val(group['id']).text(group['name']);
+					$("#group_id").append(option);
+				}else{
+					var option = $("<option select='selected'>").val(group['id']).text(group['name']);
+					$("#group_id").append(option);
+				}
+
+
+			}
+		}
+	});
+}
 
 $('#demand-form').bind('submit', function(e) {
 	e.preventDefault();

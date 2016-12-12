@@ -15,8 +15,9 @@ use Yii;
  * @property integer $category_id
  * @property string $category_name
  * @property string $category_title
- * @property integer $banner_id
  * @property string $banner_url
+ *
+ * @property AdvertCategory $category
  */
 class Advert extends \backend\models\BaseModel
 {
@@ -34,10 +35,11 @@ class Advert extends \backend\models\BaseModel
     public function rules()
     {
         return [
-            [['title', 'description', 'level', 'goto', 'record_id', 'category_id', 'category_name', 'category_title', 'banner_id', 'banner_url'], 'required'],
-            [['level', 'category_id', 'banner_id'], 'integer'],
+            [['title', 'description', 'level', 'goto', 'record_id', 'category_id', 'category_name', 'category_title', 'banner_url'], 'required'],
+            [['level', 'category_id'], 'integer'],
             [['title', 'description', 'record_id', 'banner_url'], 'string', 'max' => 255],
             [['goto'], 'string', 'max' => 50],
+            [['create_time'], 'safe'],
             [['category_name', 'category_title'], 'string', 'max' => 100]
         ];
     }
@@ -54,12 +56,20 @@ class Advert extends \backend\models\BaseModel
             'level' => Yii::t('app', '优先级'),
             'goto' => Yii::t('app', '跳转方式（link 网页）'),
             'record_id' => Yii::t('app', '记录值'),
-            'category_id' => Yii::t('app', '分类编号'),
-            'category_name' => Yii::t('app', '分类名（英文）'),
-            'category_title' => Yii::t('app', '分类标题'),
-            'banner_id' => Yii::t('app', '横幅编号'),
+            'category_id' => Yii::t('app', '广告位编号'),
+            'category_name' => Yii::t('app', '广告位名（英文）'),
+            'category_title' => Yii::t('app', '广告位标题'),
             'banner_url' => Yii::t('app', '图片地址'),
+            'create_time' => Yii::t('app', '生成时间'),
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategory()
+    {
+        return $this->hasOne(AdvertCategory::className(), ['id' => 'category_id']);
     }
 
   /**
@@ -221,7 +231,7 @@ class Advert extends \backend\models\BaseModel
                         'name' => 'category_id',
                         'allowNull' => false,
 //                         'autoIncrement' => false,
-//                         'comment' => '分类编号',
+//                         'comment' => '广告位编号',
 //                         'dbType' => "int(11)",
                         'defaultValue' => '',
                         'enumValues' => null,
@@ -244,7 +254,7 @@ class Advert extends \backend\models\BaseModel
                         'name' => 'category_name',
                         'allowNull' => false,
 //                         'autoIncrement' => false,
-//                         'comment' => '分类名（英文）',
+//                         'comment' => '广告位名（英文）',
 //                         'dbType' => "varchar(100)",
                         'defaultValue' => '',
                         'enumValues' => null,
@@ -267,7 +277,7 @@ class Advert extends \backend\models\BaseModel
                         'name' => 'category_title',
                         'allowNull' => false,
 //                         'autoIncrement' => false,
-//                         'comment' => '分类标题',
+//                         'comment' => '广告位标题',
 //                         'dbType' => "varchar(100)",
                         'defaultValue' => '',
                         'enumValues' => null,
@@ -286,29 +296,29 @@ class Advert extends \backend\models\BaseModel
                         'isSort' => true,
 //                         'udc'=>'',
                     ),
-		'banner_id' => array(
-                        'name' => 'banner_id',
-                        'allowNull' => false,
+            'create_time' => array(
+                'name' => 'create_date',
+                'allowNull' => true,
 //                         'autoIncrement' => false,
-//                         'comment' => '横幅编号',
-//                         'dbType' => "int(11)",
-                        'defaultValue' => '',
-                        'enumValues' => null,
-                        'isPrimaryKey' => false,
-                        'phpType' => 'integer',
-                        'precision' => '11',
-                        'scale' => '',
-                        'size' => '11',
-                        'type' => 'integer',
-                        'unsigned' => false,
-                        'label'=>$this->getAttributeLabel('banner_id'),
-                        'inputType' => 'text',
-                        'isEdit' => true,
-                        'isSearch' => false,
-                        'isDisplay' => true,
-                        'isSort' => true,
+//                         'comment' => '创建时间',
+//                         'dbType' => "datetime",
+                'defaultValue' => '',
+                'enumValues' => null,
+                'isPrimaryKey' => false,
+                'phpType' => 'string',
+                'precision' => '',
+                'scale' => '',
+                'size' => '',
+                'type' => 'datetime',
+                'unsigned' => false,
+                'label'=>$this->getAttributeLabel('create_time'),
+                'inputType' => 'text',
+                'isEdit' => true,
+                'isSearch' => false,
+                'isDisplay' => true,
+                'isSort' => true,
 //                         'udc'=>'',
-                    ),
+            ),
 		'banner_url' => array(
                         'name' => 'banner_url',
                         'allowNull' => false,
