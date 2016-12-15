@@ -66,9 +66,11 @@ $modelLabel = new \backend\models\Dynamic();
               echo '<th onclick="orderby(\'title\', \'desc\')" '.CommonFun::sortClass($orderby, 'title').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('title').'</th>';
               echo '<th onclick="orderby(\'parse_content\', \'desc\')" '.CommonFun::sortClass($orderby, 'parse_content').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('parse_content').'</th>';
               echo '<th onclick="orderby(\'create_time\', \'desc\')" '.CommonFun::sortClass($orderby, 'create_time').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('create_time').'</th>';
-              echo '<th onclick="orderby(\'flag\', \'desc\')" '.CommonFun::sortClass($orderby, 'flag').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('flag').'</th>';
               echo '<th onclick="orderby(\'uid\', \'desc\')" '.CommonFun::sortClass($orderby, 'uid').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('uid').'</th>';
-         
+			  echo '<th onclick="orderby(\'pos\', \'desc\')" '.CommonFun::sortClass($orderby, 'pos').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('pos').'</th>';
+			  echo '<th onclick="orderby(\'flag\', \'desc\')" '.CommonFun::sortClass($orderby, 'flag').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('flag').'</th>';
+
+
 			?>
 	
             <th tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >操作</th>
@@ -84,8 +86,9 @@ $modelLabel = new \backend\models\Dynamic();
                 echo '  <td>' . $model->title . '</td>';
                 echo '  <td>' . $model->parse_content . '</td>';
                 echo '  <td>' . $model->create_time . '</td>';
-                echo '  <td>' . $model->flag . '</td>';
                 echo '  <td>' . $model->uid . '</td>';
+				echo '  <td> <a onclick="posAction(' . $model->id .',this)">' . ($model->pos===1?'推荐':'未推荐') . '</a></td>';
+				echo '  <td> <a onclick="disableAction(' .$model->id . ',this)">' . ($model->flag===1?'正常':'禁用') . '</a></td>';
                 echo '  <td class="center">';
                 echo '      <a id="view_btn" onclick="viewAction(' . $model->id . ')" class="btn btn-primary btn-sm" href="#"> <i class="glyphicon glyphicon-zoom-in icon-white"></i>查看</a>';
                 echo '      <a id="edit_btn" onclick="editAction(' . $model->id . ')" class="btn btn-primary btn-sm" href="#"> <i class="glyphicon glyphicon-edit icon-white"></i>修改</a>';
@@ -271,6 +274,49 @@ function orderby(field, op){
 		$('#edit_dialog').modal('show');
 }
 
+function posAction(id,even){
+	$.ajax({
+		type: "GET",
+		url: "<?=Url::toRoute('dynamic/pos')?>" + "?id=" + id,
+		cache: false,
+		dataType:"json",
+		error: function (xmlHttpRequest, textStatus, errorThrown) {
+			admin_tool.alert('msg_info', '出错了，' + textStatus, 'warning');
+		},
+		success: function(data){
+			if (data.errno == 0){
+				if(data.pos==0){
+					$(even).html('非推荐');
+				}else{
+					$(even).html('推荐');
+				}
+
+			}
+		}
+	});
+}
+
+function disableAction(id,even){
+	$.ajax({
+		type: "GET",
+		url: "<?=Url::toRoute('dynamic/disable')?>" + "?id=" + id,
+		cache: false,
+		dataType:"json",
+		error: function (xmlHttpRequest, textStatus, errorThrown) {
+			admin_tool.alert('msg_info', '出错了，' + textStatus, 'warning');
+		},
+		success: function(data){
+			if (data.errno == 0){
+				if(data.pos==0){
+					$(even).html('禁用');
+				}else{
+					$(even).html('正常');
+				}
+
+			}
+		}
+	});
+}
 function initModel(id, type, fun){
 	
 	$.ajax({

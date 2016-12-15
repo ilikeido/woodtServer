@@ -57,8 +57,8 @@ class Advert extends \backend\models\BaseModel
             'goto' => Yii::t('app', '跳转方式（link 网页）'),
             'record_id' => Yii::t('app', '记录值'),
             'category_id' => Yii::t('app', '广告位编号'),
-            'category_name' => Yii::t('app', '广告位名（英文）'),
-            'category_title' => Yii::t('app', '广告位标题'),
+            'category_name' => Yii::t('app', '广告位名英文'),
+            'category_title' => Yii::t('app', '广告位名中文'),
             'banner_url' => Yii::t('app', '图片地址'),
             'create_time' => Yii::t('app', '生成时间'),
         ];

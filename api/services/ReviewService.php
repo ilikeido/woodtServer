@@ -19,7 +19,7 @@ class ReviewService extends Review  {
     /*
      * 获取供求列表
      */
-    public function getPage($type,$p=1,$sid){
+    public static function getPage($type,$p=1,$sid){
         $query = (new Query())->from('review')->select(['id','uid','content','nickname','create_time','avatar'])->where(['flag' => 1]);
         if(!empty($type)){
             $query = $query->andWhere(['type'=>$type]);

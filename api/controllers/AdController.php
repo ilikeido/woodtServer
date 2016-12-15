@@ -13,18 +13,26 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use api\controllers\BaseController;
-use api\services\UserAccountService;
+use api\services\AdvertService;
 /**
  * TestController implements the CRUD actions for Test model.
  */
 class AdController extends BaseController
 {
     /*
-     * 获取新闻列表
+     * 获取广告列表
      */
     public function actionGetlist()
     {
-        return ['code'=>0,'msg'=>"",'time'=>time(),'data'=>[]];
+        $name = Yii::$app->request->post('name');
+        $os = Yii::$app->request->post('os');
+        $query = AdvertService::find()->select(['id','title','level','description','banner_url','goto','record_id'])->asArray();
+        if (!empty($name)){
+            $query->where(['category_name'=>$name]);
+        }
+        $query->orderBy('level desc,id desc');
+        $ads = $query->all();
+        return ['code'=>0,'msg'=>"",'time'=>time(),'data'=>$ads];
 
     }
 

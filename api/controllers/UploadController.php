@@ -74,11 +74,11 @@ class UploadController extends Controller
                 $fileName = date("HiiHsHis").$model->file->baseName . "." . $model->file->extension;
                 $dir = $dir."/". $fileName;
                 $model->file->saveAs($dir);
-                $uploadSuccessPath = "http://static.testwoodt.com/".date("Ymd").'/'.$fileName;
-                return ['code'=>0,'link'=>$uploadSuccessPath];
+                $uploadSuccessPath = "/".date("Ymd").'/'.$fileName;
+                return ['status'=>1,'path'=>$uploadSuccessPath,'info'=>'上传成功'];
             }
         }
-        return ['code'=>1,'message'=>'上传失败'];
+        return ['status'=>0,'info'=>'上传失败'];
     }
 
 //    public  function  mkdir($dir){

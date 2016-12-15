@@ -7,7 +7,7 @@ use yii\helpers\ArrayHelper;
 
 class DemandAreaService extends DemandArea{
 
-    public function getAllAreaNames(){
+    public static function getAllAreaNames(){
         $query = (new Query())->select('id,area')->from('demand_area')->orderBy('sort, id');
         $result = $query->all();
         return ArrayHelper::map($result,'id','area');

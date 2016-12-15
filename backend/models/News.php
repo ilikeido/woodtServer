@@ -37,7 +37,7 @@ class News extends \backend\models\BaseModel
     {
         return [
             [['title', 'category', 'tags', 'parse_content'], 'required'],
-            [['cover_id', 'view', 'uid', 'sort', 'flag'], 'integer'],
+            [['cover_id', 'view', 'uid', 'pos','sort', 'flag'], 'integer'],
             [['parse_content'], 'string'],
             [['create_time'], 'safe'],
             [['title', 'description', 'category', 'tags', 'cover_thumb_url'], 'string', 'max' => 255]
@@ -62,6 +62,7 @@ class News extends \backend\models\BaseModel
             'view' => Yii::t('app', '浏览数'),
             'uid' => Yii::t('app', '发布者'),
             'sort' => Yii::t('app', '排序'),
+            'pos' => Yii::t('app', '推荐'),
             'flag' => Yii::t('app', '是否可用'),
         ];
     }
@@ -359,6 +360,29 @@ class News extends \backend\models\BaseModel
                         'isSort' => true,
 //                         'udc'=>'',
                     ),
+            'pos' => array(
+                'name' => 'pos',
+                'allowNull' => false,
+//                         'autoIncrement' => false,
+//                         'comment' => '推荐',
+//                         'dbType' => "smallint(1)",
+                'defaultValue' => '0',
+                'enumValues' => null,
+                'isPrimaryKey' => false,
+                'phpType' => 'integer',
+                'precision' => '1',
+                'scale' => '',
+                'size' => '1',
+                'type' => 'smallint',
+                'unsigned' => false,
+                'label'=>$this->getAttributeLabel('pos'),
+                'inputType' => 'text',
+                'isEdit' => true,
+                'isSearch' => false,
+                'isDisplay' => true,
+                'isSort' => true,
+//                         'udc'=>'',
+            ),
 		'flag' => array(
                         'name' => 'flag',
                         'allowNull' => false,

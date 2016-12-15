@@ -32,7 +32,7 @@ class Dynamic extends \backend\models\BaseModel
             [['title', 'parse_content', 'flag', 'uid'], 'required'],
             [['parse_content'], 'string'],
             [['create_time'], 'safe'],
-            [['flag', 'uid'], 'integer'],
+            [['flag', 'uid','pos'], 'integer'],
             [['title'], 'string', 'max' => 255]
         ];
     }
@@ -48,6 +48,7 @@ class Dynamic extends \backend\models\BaseModel
             'parse_content' => Yii::t('app', '内容'),
             'create_time' => Yii::t('app', '创建时间'),
             'flag' => Yii::t('app', 'Flag'),
+            'pos' => Yii::t('app', '推荐'),
             'uid' => Yii::t('app', 'Uid'),
         ];
     }
@@ -161,6 +162,29 @@ class Dynamic extends \backend\models\BaseModel
                         'isSort' => true,
 //                         'udc'=>'',
                     ),
+            'pos' => array(
+                'name' => 'pos',
+                'allowNull' => false,
+//                         'autoIncrement' => false,
+//                         'comment' => '推荐',
+//                         'dbType' => "smallint(1)",
+                'defaultValue' => '0',
+                'enumValues' => null,
+                'isPrimaryKey' => false,
+                'phpType' => 'integer',
+                'precision' => '1',
+                'scale' => '',
+                'size' => '1',
+                'type' => 'smallint',
+                'unsigned' => false,
+                'label'=>$this->getAttributeLabel('pos'),
+                'inputType' => 'text',
+                'isEdit' => true,
+                'isSearch' => false,
+                'isDisplay' => true,
+                'isSort' => true,
+//                         'udc'=>'',
+            ),
 		'flag' => array(
                         'name' => 'flag',
                         'allowNull' => false,

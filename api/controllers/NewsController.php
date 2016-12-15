@@ -32,8 +32,7 @@ class NewsController extends BaseController
         $p = Yii::$app->request->post('p');
         $category = Yii::$app->request->post('category');
         $tag = Yii::$app->request->post('tag');
-        $newsService = new NewsService();
-        $pagedata = $newsService->getPage($p,$category,$tag);
+        $pagedata = NewsService::getPage($p,$category,$tag);
         $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>$pagedata];
         return $result;
 

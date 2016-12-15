@@ -6,23 +6,27 @@ use api\models\UserCollection;
 use \yii\db\Query;
 use \yii\helpers\ArrayHelper;
 
-class UserCollectionService extends UserAccount{
+class UserCollectionService extends UserCollection{
 
     /**
-     * 判断是否关注
+     * 判断是否收藏
      */
-    public function collectionIsExits($uid,$tid){
-        $count = UserCollection::find()->where(['uid'=>$uid])->andWhere(['tid'=>$tid])->count();
+    public static function collectionIsExits($uid,$tid,$channel){
+        $query = UserCollection::find()->where(['uid'=>$uid])->andWhere(['tid'=>$tid]);
+        if ($channel){
+            $query->andWhere(['channel'=>$channel]);
+        }
+        $count = $query->count();
         if ($count >0)
             return true;
         return false;
     }
 
     /**
-     * 增加关注
+     * 增加收藏
      */
-    public function addCollection($uid,$tid,$channel,$title){
-        if ($this->collectionIsExits($uid,$tid)){
+    public static function addCollection($uid,$tid,$channel,$title){
+        if (collectionIsExits($uid,$tid,$channel)){
             return true;
         }
         $model = new UserCollection();
@@ -36,10 +40,10 @@ class UserCollectionService extends UserAccount{
 
 
     /**
-     * 删除关注
+     * 删除收藏
      */
-    public function delAttention($uid,$tid){
-        UserCollection::deleteAll(['uid'=>$uid,'tid'=>$tid]);
+    public static function delCollection($uid,$tid,$channel){
+        UserCollection::deleteAll(['uid'=>$uid,'tid'=>$tid,'channel'=>$channel]);
         return true;
     }
    

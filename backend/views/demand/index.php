@@ -43,8 +43,30 @@ $modelLabel = new \backend\models\Demand();
                   <div class="form-group" style="margin: 5px;">
                       <label><?=$modelLabel->getAttributeLabel('id')?>:</label>
                       <input type="text" class="form-control" id="query[id]" name="query[id]"  value="<?=isset($query["id"]) ? $query["id"] : "" ?>">
+					  <label><?=$modelLabel->getAttributeLabel('uid')?>:</label>
 					  <input type="text" class="form-control" id="query[uid]" name="query[uid]"  value="<?=isset($query["uid"]) ? $query["uid"] : "" ?>">
-
+					  <label><?=$modelLabel->getAttributeLabel('area')?>:</label>
+					  <select class="form-control" name="query[area]" id="query[area]" value="<?=isset($query["area"]) ? $query["area"] : "" ?>">
+						  <option value="">全选</option>
+						  <?php
+						  foreach($areas as $key=>$data){
+							  echo "<option value='" . $key . "'>". $data."</option>";
+						  }
+						  ?>
+					  </select>
+					  <label><?=$modelLabel->getAttributeLabel('category_title')?>:</label>
+					  <select class="form-control" name="query[category_id]" id="query_category_id" value="<?=isset($query["category_id"]) ? $query["category_id"] : "" ?>">
+						      <option value="">全选</option>
+							  <?php
+							  foreach($categorys as $key=>$data){
+								  echo "<option value='" . $key . "'>". $data."</option>";
+							  }
+							  ?>
+					  </select>
+					  <label><?=$modelLabel->getAttributeLabel('group_id')?>:</label>
+					  <select class="form-control" name="query[group_id]" id="query_group_id" value="<?=isset($query["group_id"]) ? $query["group_id"] : "" ?>">
+						  <option value="">全选</option>
+					  </select>
                   </div>
               <div class="form-group">
               	<a onclick="searchAction()" class="btn btn-primary btn-sm" href="#"> <i class="glyphicon glyphicon-zoom-in icon-white"></i>搜索</a>
@@ -176,6 +198,14 @@ $modelLabel = new \backend\models\Demand();
               </div>
               <div class="clearfix"></div>
           </div>
+
+			<div id="uid_div" class="form-group">
+				<label for="title" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("uid")?></label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" id="uid" name="Demand[uid]" placeholder="必填" />
+				</div>
+				<div class="clearfix"></div>
+			</div>
 
           <div id="price_div" class="form-group">
               <label for="price" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("price")?></label>
@@ -390,7 +420,7 @@ function disableAction(id,even){
     	$("#parse_content").val(data.parse_content);
     	$("#uid").val(data.uid);
     	$("#sort").val(data.sort);
-		getGroupAction(data.category_id);
+		getGroupAction(data.category_id,data.group_id,$("#group_id"));
     	}
 	if(type == "view"){
       $("#id").attr({readonly:true,disabled:true});
@@ -530,10 +560,15 @@ $('#delete_btn').click(function (e) {
 
 $("#category_id").change(function(){
 	var categoryid=$(this).children('option:selected').val();
-	getGroupAction(categoryid);
+	getGroupAction(categoryid,'',$("#group_id"));
 });
 
-function getGroupAction(category_id,defaultValue){
+$("#query_category_id").change(function(){
+	var categoryid=$(this).children('option:selected').val();
+	getGroupAction(categoryid,'',$("#query_group_id"));
+});
+
+function getGroupAction(category_id,defaultValue,doc){
 	$.ajax({
 		type: "GET",
 		url: "<?=Url::toRoute('demand/groups')?>" + "?id=" + category_id,
@@ -543,18 +578,17 @@ function getGroupAction(category_id,defaultValue){
 			admin_tool.alert('msg_info', '出错了，' + textStatus, 'warning');
 		},
 		success: function(data){
-			$("#group_id").empty();
+			doc.empty();
 			//循环添加
 			for(var i = 0; i < data.groups.length; i++) {
 				var group = data.groups[i];
-				if(group['id'] == defaultValue){
+				if(group['id'] != defaultValue){
 					var option = $("<option>").val(group['id']).text(group['name']);
-					$("#group_id").append(option);
+					doc.append(option);
 				}else{
-					var option = $("<option select='selected'>").val(group['id']).text(group['name']);
-					$("#group_id").append(option);
+					var option = $("<option selected = 'selected'>").val(group['id']).text(group['name']);
+					doc.append(option);
 				}
-
 
 			}
 		}

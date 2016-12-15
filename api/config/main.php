@@ -25,6 +25,12 @@ $config = [
             'enableAutoLogin' => true,
             'enableSession'=>false,
         ],
+        'session' => [
+            'class' => 'yii\web\DbSession',
+            'timeout'=>60*60*24,
+//            'db' => 'mydb',  // 数据库连接的应用组件ID，默认为'db'.
+//            'sessionTable' => 'my_session', // session 数据表名，默认为'session'.
+        ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [

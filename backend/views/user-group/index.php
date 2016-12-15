@@ -156,6 +156,7 @@ $modelLabel = new \backend\models\UserGroup();
 				<?php $form = ActiveForm::begin(["id" => "group-icon-form", "class"=>"form-horizontal", "action"=>Url::toRoute("user-group/icon")]); ?>
 				<input type="hidden" class="form-control" id="group_id" name="id" />
 				<input type="hidden" class="form-control" id="group_icon_src" name="icon_src" />
+				<div id="kv-avatar-errors-1" class="center-block" style="width:500px;display:none"></div>
 				<div class="kv-avatar center-block" style="width:200px">
 					<input id="input-image" name="file" type="file" multiple class="file-loading" accept="image/*">
 				</div>
@@ -318,7 +319,7 @@ function initEditIconAction(data,id) {
 		msgErrorClass: 'alert alert-block alert-danger',
 		defaultPreviewContent: '<img src="' + data.icon_src + '" alt="图标" style="width:150px">',
 		layoutTemplates: {main2: '{preview}{remove}{browse}'},
-		allowedFileExtensions: ["jpg", "png", "gif"]
+		allowedFileExtensions: ["jpg", "png", "gif","jpeg"]
 	}).on('filepreupload', function() {
 		$('#group_icon_src').val('');
 	}).on('fileuploaded', function(event, data) {

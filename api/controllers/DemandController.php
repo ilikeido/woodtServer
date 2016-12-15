@@ -29,8 +29,7 @@ class DemandController extends BaseController
 
     public function actionGetarea()
     {
-        $service = new DemandAreaService();
-        $areas = $service->getAllAreaNames();
+        $areas = DemandAreaService::getAllAreaNames();
         $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>$areas];
         return $result;
     }
@@ -43,8 +42,7 @@ class DemandController extends BaseController
         $cache = Yii::$app->cache;
         $value = false;//$cache->get('AllCatoryAndTag');
         if($value == false){
-            $service = new DemandService();
-            $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>$service->getCatorysAndTag()];
+            $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>DemandService::getCatorysAndTag()];
             return $result;
         }else{
             return $value;
@@ -58,8 +56,7 @@ class DemandController extends BaseController
         $cache = Yii::$app->cache;
         $value = false;//$cache->get('AllCatoryAndTag');
         if($value == false){
-            $service = new DemandService();
-            $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>$service->getAllcatorys()];
+            $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>DemandService::getAllcatorys()];
 //            $dependency = new \yii\caching\ExpressionDependency(
 //                ['expression'=> $cache->get('category-group-tag-updateTime')]
 //            );
@@ -82,8 +79,7 @@ class DemandController extends BaseController
         $tag = Yii::$app->request->post('tag');
         $area = Yii::$app->request->post('area');
         $order = Yii::$app->request->post('order');
-        $demandService = new DemandService();
-        $pagedata = $demandService->getPage($root,$p,null,$category,$group,$tag,$area,$order);
+        $pagedata = DemandService::getPage($root,$p,null,$category,$group,$tag,$area,$order);
         $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>$pagedata];
         return $result;
     }
@@ -93,8 +89,7 @@ class DemandController extends BaseController
      */
     public function actionDetail(){
         $id = Yii::$app->request->post('id');
-        $demandService = new DemandService();
-        $demand = $demandService->getDetail($id);
+        $demand = DemandService::getDetail($id);
         if ($demand != null){
             $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>$demand];
             $model = DemandService::findOne($id);
@@ -111,8 +106,7 @@ class DemandController extends BaseController
     public function actionGettags(){
         $category = Yii::$app->request->post('category');
         $group = Yii::$app->request->post('group');
-        $demandService = new DemandService();
-        $tags = $demandService->getTags($category,$group);
+        $tags = DemandService::getTags($category,$group);
         $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>$tags];
         return $result;
     }
@@ -124,10 +118,10 @@ class DemandController extends BaseController
         $uid = Yii::$app->request->post('uid');
         $root = Yii::$app->request->post('root');
         $p = Yii::$app->request->post('p');
-        $demandService = new DemandService();
-        $result = $demandService->getPage($root,$p,$uid);
+        $result = DemandService::getPage($root,$p,$uid);
         return ['code'=>0,'msg'=>'','time'=>time(),'data'=>$result];
     }
+
 
 
 

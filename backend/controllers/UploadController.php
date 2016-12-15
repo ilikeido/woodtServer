@@ -74,7 +74,7 @@ class UploadController extends Controller
                 $fileName = date("HiiHsHis").$model->file->baseName . "." . $model->file->extension;
                 $dir = $dir."/". $fileName;
                 $model->file->saveAs($dir);
-                $uploadSuccessPath = "http://static.testwoodt.com/".date("Ymd").'/'.$fileName;
+                $uploadSuccessPath = "/".date("Ymd").'/'.$fileName;
                 return ['code'=>0,'link'=>$uploadSuccessPath];
             }
         }

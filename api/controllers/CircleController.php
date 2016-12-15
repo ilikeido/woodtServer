@@ -31,8 +31,7 @@ class CircleController extends BaseController
     public function actionDetail()
     {
         $uid = Yii::$app->request->post('uid');
-        $serivce = new CircleService();
-        $result = $serivce->getDetail($uid);
+        $result = CircleService::getDetail($uid);
         if ($result != null){
             return  ['code'=>2,'msg'=>'','time'=>time(),'data'=>$result];
         }else{
@@ -243,8 +242,7 @@ class CircleController extends BaseController
      * 获取用户详情
      */
     protected function getUserDetail($uid){
-        $userService =  new UserAccountService();
-        $userDetail =  $userService->getUserDetail($uid);
+        $userDetail =  UserAccountService::getUserDetail($uid);
         return $userDetail;
     }
 

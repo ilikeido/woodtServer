@@ -91,7 +91,7 @@ $modelLabel = new \backend\models\Advert();
                 echo '  <td>' . $model->goto . '</td>';
                 echo '  <td>' . $model->record_id . '</td>';
                 echo '  <td>' . $model->category_title . '</td>';
-                echo '  <td>' . $model->banner_url . '</td>';
+                echo '  <td><img src="http://static.testwoodt.com/' . $model->banner_url . '" style="height:50px;width=100px"></td>';
                 echo '  <td class="center">';
                 echo '      <a id="view_btn" onclick="viewAction(' . $model->id . ')" class="btn btn-primary btn-sm" href="#"> <i class="glyphicon glyphicon-zoom-in icon-white"></i>查看</a>';
                 echo '      <a id="edit_btn" onclick="editAction(' . $model->id . ')" class="btn btn-primary btn-sm" href="#"> <i class="glyphicon glyphicon-edit icon-white"></i>修改</a>';
@@ -215,6 +215,7 @@ $modelLabel = new \backend\models\Advert();
               <div class="clearfix"></div>
           </div>
           <div id="banner_url_div" class="form-group">
+			  <div id="kv-avatar-errors-1" class="center-block" style="width:500px;display:none"></div>
               <label for="banner_url" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("banner_url")?></label>
               <div class="col-sm-10">
 				  <input type="hidden" class="form-control" id="banner_url" name="Advert[banner_url]" placeholder="" />
@@ -274,12 +275,14 @@ function orderby(field, op){
  function viewAction(id){
 		initModel(id, 'view', 'fun');
 	}
+var imageBasePath = "http://static.testwoodt.com/";
 
-function initEditBannerUrlAction($image_url) {
+function initEditBannerUrlAction() {
 	$("#input-image").fileinput({
 		language: 'zh',
 		uploadUrl: "/upload/image",
 		overwriteInitial: true,
+		autoReplace: true,
 //		maxFileSize: 1500,
 		maxImageWidth: 640,
 		maxImageHeight: 300,
@@ -294,9 +297,9 @@ function initEditBannerUrlAction($image_url) {
 		removeTitle: '取消或重置',
 		elErrorContainer: '#kv-avatar-errors-1',
 		msgErrorClass: 'alert alert-block alert-danger',
-		defaultPreviewContent: '<img src="' + $image_url + '" alt="图标" style="width:150px">',
+		defaultPreviewContent: '<img src="' + imageBasePath +  $('#banner_url').val() + '" alt="图标" style="width:150px">',
 		layoutTemplates: {main2: '{preview}{remove}{browse}'},
-		allowedFileExtensions: ["jpg", "png", "gif"]
+		allowedFileExtensions: ["jpg", "png", "gif","jpeg"]
 	}).on('filepreupload', function() {
 		$('#banner_url').val('');
 	}).on('fileuploaded', function(event, data) {
@@ -351,7 +354,8 @@ function initEditBannerUrlAction($image_url) {
 		}
 
 		$('#edit_dialog').modal('show');
-	 initEditBannerUrlAction(data.banner_url);
+	 initEditBannerUrlAction();
+	 $(".file-default-preview").html('<img src="' + imageBasePath +  $('#banner_url').val() + '" alt="图标" style="width:150px">');
 
 }
 

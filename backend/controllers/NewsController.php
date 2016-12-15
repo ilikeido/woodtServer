@@ -160,6 +160,48 @@ class NewsController extends BaseController
     
     }
 
+    /*
+     * 设置推荐
+     */
+    public function actionPos($id){
+        if (empty($id) == false){
+            $model = $this->findModel($id);
+            if ($model != null){
+                $pos = $model['pos'];
+                if ($pos === 1){
+                    $model['pos'] = 0;
+                }else{
+                    $model['pos'] = 1;
+                }
+            }
+            $model->save();
+            echo json_encode(array('errno'=>0, 'msg'=>'','pos'=>$model['pos']));
+        }else{
+            echo json_encode(array('errno'=>2, 'msg'=>''));
+        }
+    }
+
+    /*
+     * 设置禁用
+     */
+    public function actionDisable($id){
+        if (empty($id) == false){
+            $model = $this->findModel($id);
+            if ($model != null){
+                $pos = $model['flag'];
+                if ($pos === 1){
+                    $model['flag'] = 0;
+                }else{
+                    $model['flag'] = 1;
+                }
+            }
+            $model->save();
+            echo json_encode(array('errno'=>0, 'msg'=>'','pos'=>$model['flag']));
+        }else{
+            echo json_encode(array('errno'=>2, 'msg'=>''));
+        }
+    }
+
     /**
      * Deletes an existing News model.
      * If deletion is successful, the browser will be redirected to the 'index' page.

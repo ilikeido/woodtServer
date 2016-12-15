@@ -74,12 +74,12 @@ $modelLabel = new \backend\models\News();
               echo '<th onclick="orderby(\'description\', \'desc\')" '.CommonFun::sortClass($orderby, 'description').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('description').'</th>';
               echo '<th onclick="orderby(\'category\', \'desc\')" '.CommonFun::sortClass($orderby, 'category').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('category').'</th>';
               echo '<th onclick="orderby(\'tags\', \'desc\')" '.CommonFun::sortClass($orderby, 'tags').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('tags').'</th>';
-              echo '<th onclick="orderby(\'cover_id\', \'desc\')" '.CommonFun::sortClass($orderby, 'cover_id').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('cover_id').'</th>';
               echo '<th onclick="orderby(\'cover_thumb_url\', \'desc\')" '.CommonFun::sortClass($orderby, 'cover_thumb_url').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('cover_thumb_url').'</th>';
               echo '<th onclick="orderby(\'create_time\', \'desc\')" '.CommonFun::sortClass($orderby, 'create_time').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('create_time').'</th>';
               echo '<th onclick="orderby(\'view\', \'desc\')" '.CommonFun::sortClass($orderby, 'view').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('view').'</th>';
               echo '<th onclick="orderby(\'uid\', \'desc\')" '.CommonFun::sortClass($orderby, 'uid').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('uid').'</th>';
               echo '<th onclick="orderby(\'sort\', \'desc\')" '.CommonFun::sortClass($orderby, 'sort').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('sort').'</th>';
+			  echo '<th onclick="orderby(\'pos\', \'desc\')" '.CommonFun::sortClass($orderby, 'pos').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('pos').'</th>';
               echo '<th onclick="orderby(\'flag\', \'desc\')" '.CommonFun::sortClass($orderby, 'flag').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('flag').'</th>';
          
 			?>
@@ -99,12 +99,13 @@ $modelLabel = new \backend\models\News();
                 echo '  <td>' . $model->category . '</td>';
                 echo '  <td>' . $model->tags . '</td>';
                 echo '  <td>' . $model->cover_id . '</td>';
-                echo '  <td>' . $model->cover_thumb_url . '</td>';
+                echo '  <td><img src="http://static.testwoodt.com/' . $model->cover_thumb_url . '" style="height:40px;width:70px"></td>';
                 echo '  <td>' . $model->create_time . '</td>';
                 echo '  <td>' . $model->view . '</td>';
                 echo '  <td>' . $model->uid . '</td>';
                 echo '  <td>' . $model->sort . '</td>';
-                echo '  <td>' . $model->flag . '</td>';
+				echo '  <td> <a onclick="posAction(' . $model->id .',this)">' . ($model->pos===1?'推荐':'非推荐') . '</a></td>';
+				echo '  <td> <a onclick="disableAction(' .$model->id . ',this)">' . ($model->flag===1?'正常':'禁用') . '</a></td>';
                 echo '  <td class="center">';
                 echo '      <a id="view_btn" onclick="viewAction(' . $model->id . ')" class="btn btn-primary btn-sm" href="#"> <i class="glyphicon glyphicon-zoom-in icon-white"></i>查看</a>';
                 echo '      <a id="edit_btn" onclick="editAction(' . $model->id . ')" class="btn btn-primary btn-sm" href="#"> <i class="glyphicon glyphicon-edit icon-white"></i>修改</a>';
@@ -220,6 +221,7 @@ $modelLabel = new \backend\models\News();
           </div>
           <input type="hidden" class="form-control" id="cover_id" name="News[cover_id]" placeholder="" />
           <div id="cover_thumb_url_div" class="form-group">
+			  <div id="kv-avatar-errors-1" class="center-block" style="width:500px;display:none"></div>
               <label for="cover_thumb_url" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("cover_thumb_url")?></label>
               <div class="col-sm-10">
 				  <input type="hidden" class="form-control" id="cover_thumb_url" name="News[cover_thumb_url]" placeholder="" />
@@ -263,6 +265,7 @@ $modelLabel = new \backend\models\News();
 	}
 </style>
  <script>
+	 var imageServerPath = 'http://static.testwoodt.com/'
 function orderby(field, op){
 	 var url = window.location.search;
 	 var optemp = field + " desc";
@@ -334,7 +337,8 @@ function orderby(field, op){
 		$('#edit_dialog').modal('show');
 //	 var ckpath = '<?//=Url::base()?>///plugins/';
 	 initEditIconAction(data.cover_thumb_url);
-	 var editor =CKEDITOR.replace( 'editor', {
+	 $(".file-default-preview").html('<img src="' + imageBasePath +  $('#banner_url').val() + '" alt="图标" style="width:150px">');
+	 var meditor =CKEDITOR.replace( 'editor', {
 		 uiColor: '#9AB8F3',
 		 // Configure your file manager integration. This example uses CKFinder 3 for PHP.
 //		 filebrowserBrowseUrl: ckpath + 'ckfinder/ckfinder.html',
@@ -344,7 +348,7 @@ function orderby(field, op){
 		 filebrowserImageUploadUrl: '/upload/ckimage'
 //		 filebrowserImageUploadUrl: ckpath + 'ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images'
 	 });
-	 editor.on( 'change', function( evt ) {
+	 meditor.on( 'change', function( evt ) {
 		 $("#parse_content").val(evt.editor.getData());
 	 });
 }
@@ -368,15 +372,58 @@ function initEditIconAction($cover_thumb_url) {
 		removeTitle: '取消或重置',
 		elErrorContainer: '#kv-avatar-errors-1',
 		msgErrorClass: 'alert alert-block alert-danger',
-		defaultPreviewContent: '<img src="' + $cover_thumb_url + '" alt="图标" style="width:150px">',
+		defaultPreviewContent: '<img src="' + imageServerPath + $cover_thumb_url + '" alt="图标" style="width:150px">',
 		layoutTemplates: {main2: '{preview}{remove}{browse}'},
-		allowedFileExtensions: ["jpg", "png", "gif"]
+		allowedFileExtensions: ["jpg", "png", "gif","jpeg"]
 	}).on('filepreupload', function() {
 		$('#cover_thumb_url').val('');
 	}).on('fileuploaded', function(event, data) {
 		$('#cover_thumb_url').val(data.response.link);
 	});
 }
+ function posAction(id,even){
+	 $.ajax({
+		 type: "GET",
+		 url: "<?=Url::toRoute('news/pos')?>" + "?id=" + id,
+		 cache: false,
+		 dataType:"json",
+		 error: function (xmlHttpRequest, textStatus, errorThrown) {
+			 admin_tool.alert('msg_info', '出错了，' + textStatus, 'warning');
+		 },
+		 success: function(data){
+			 if (data.errno == 0){
+				 if(data.pos==0){
+					 $(even).html('未推荐');
+				 }else{
+					 $(even).html('推荐');
+				 }
+
+			 }
+		 }
+	 });
+ }
+
+ function disableAction(id,even){
+	 $.ajax({
+		 type: "GET",
+		 url: "<?=Url::toRoute('news/disable')?>" + "?id=" + id,
+		 cache: false,
+		 dataType:"json",
+		 error: function (xmlHttpRequest, textStatus, errorThrown) {
+			 admin_tool.alert('msg_info', '出错了，' + textStatus, 'warning');
+		 },
+		 success: function(data){
+			 if (data.errno == 0){
+				 if(data.pos==0){
+					 $(even).html('禁用');
+				 }else{
+					 $(even).html('正常');
+				 }
+
+			 }
+		 }
+	 });
+ }
 
 function initModel(id, type, fun){
 	

@@ -13,7 +13,7 @@ class UserAccountService extends UserAccount{
     /*
      * 获取用户详情
      */
-    public function getUserDetail($uid){
+    public static function getUserDetail($uid){
        $useraccount =  UserAccount::findOne($uid);
        $userResult = $useraccount->attributes;
        ArrayHelper::remove($userResult,'password');

@@ -4,6 +4,8 @@ namespace api\controllers;
 
 use api\models\Review;
 use api\services\DemandService;
+use api\services\DynamicService;
+use api\services\NewsService;
 use api\services\UserCollectionService;
 use common\models\User;
 use Yii;
@@ -24,19 +26,18 @@ use api\services\ReviewService;
 class UserCollectionController extends BaseController
 {
     /*
-     * 是否已关注某人
+     * 是否已收藏信息
      */
     public function actionExists()
     {
         $tid = Yii::$app->request->post('tid');
+        $channel = Yii::$app->request->post('channel');
         $userInfo = $this->getUserBySessionToken();
         if ($userInfo !=null){
-            $serivce = new UserCollectionService();
-            return  ['code'=>0,'msg'=>'','time'=>time(),'data'=>$serivce->collectionIsExits($userInfo['uid'],$tid)];
+            return  ['code'=>0,'msg'=>'','time'=>time(),'data'=>UserCollectionService::collectionIsExits($userInfo['uid'],$tid,$channel)];
         }
         return  ['code'=>2,'msg'=>'未登录','time'=>time()];
     }
-
 
     /*
      * 是否已关注某人
@@ -54,15 +55,16 @@ class UserCollectionController extends BaseController
                 return ['code'=>2,'msg'=>'没有找到供求信息','time'=>time()];
             }
         }else if($channel === 'news'){
-
+            $news = NewsService::findOne($tid);
+            $title = $news['title'];
         }else if($channel === 'dynamic'){
-
+            $dynamic = DynamicService::findOne($tid);
+            $title = $dynamic['title'];
         }
         $userInfo = $this->getUserBySessionToken();
         if ($userInfo !=null){
             $uid = $userInfo['uid'];
-            $service = new UserCollectionService();
-            $service->addCollection($uid,$tid,$channel,$title);
+            UserCollectionService::addCollection($uid,$tid,$channel,$title);
             return  ['code'=>0,'msg'=>'','time'=>time()];
         }
         return  ['code'=>2,'msg'=>'没有找到用户','time'=>time()];
@@ -74,14 +76,30 @@ class UserCollectionController extends BaseController
     public function actionDel()
     {
         $tid = Yii::$app->request->post('tid');
+        $channel = Yii::$app->request->post('channel');
         $userInfo = $this->getUserBySessionToken();
-        $serivce = new UserAttentionService();
+        $serivce = new UserCollectionService();
         if ($userInfo !=null){
-            return  ['code'=>0,'msg'=>'','time'=>time(),'data'=>$serivce->attentionIsExits($userInfo['uid'],$tid)];
+            $serivce->delCollection($userInfo['uid'],$tid,$channel);
+            return  ['code'=>0,'msg'=>'','time'=>time(),'data'=>0];
         }
         return  ['code'=>2,'msg'=>'没有找到用户','time'=>time()];
     }
 
-
+    public function actionGetlist(){
+        $p = Yii::$app->request->post('p');
+        $query = UserCollectionService::find()->select(['uid','tid','channel','create_time','title']);
+        $pagination = new Pagination([
+                'totalCount' =>$query->count(),
+                'pageSize' => '30',
+                'pageParam' => 'p',
+            ]
+        );
+        $pagination->page = $p-1;
+        $query = $query->offset($pagination->offset)->limit($pagination->limit);
+        $query->orderBy('id desc');
+        $data = $query->all();
+        return  ['code'=>0,'msg'=>'','time'=>time(),'data'=>['data'=>$data,'p'=>$p,'pagesize'=>$pagination->pageSize,'total'=>$pagination->totalCount]];
+    }
 
 }

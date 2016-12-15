@@ -29,7 +29,7 @@ class Dynamic extends \api\models\BaseModel
     public function rules()
     {
         return [
-            [['title', 'parse_content', 'flag', 'uid'], 'required'],
+            [['title', 'parse_content', 'uid'], 'required'],
             [['parse_content'], 'string'],
             [['create_time'], 'safe'],
             [['flag', 'uid'], 'integer'],

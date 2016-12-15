@@ -121,7 +121,19 @@ class DemandController extends BaseController
               if(empty($model->sort) == true){
                   $model->sort = 999;
               }
-        
+
+            $category = DemandCategoryService::findOne($model['category_id']);
+            $model['category_name'] = $category['name'];
+            $model['category_title'] = $category['title'];
+            $group = DemandGroupService::findOne($model['group_id']);
+            $model['group_title'] = $group['name'];
+            $area = DemandAreaService::findOne($model['area']);
+            $model['area_title'] = $area['area'];
+            if($model->validate() == true && $model->save()){
+                $msg = array('errno'=>0, 'msg'=>'保存成功');
+                echo json_encode($msg);
+            }
+
             if($model->validate() == true && $model->save()){
                 $msg = array('errno'=>0, 'msg'=>'保存成功');
                 echo json_encode($msg);
@@ -146,15 +158,23 @@ class DemandController extends BaseController
     {
         $id = Yii::$app->request->post('id');
         $model = $this->findModel($id);
+        $category_id = $model['category_id'];
+        $group_id = $model['group_id'];
+        $area_id = $model['area'];
         if ($model->load(Yii::$app->request->post())) {
-        
-              $model->create_time = 'CURRENT_TIMESTAMP';
-              $model->number = 1000;
-              $model->buy_or_sale = 1;
-              $model->flag = 1;
-              $model->sort = 999;
-        
-        
+            if (!($model['category_id'] === $category_id)){
+                $category = DemandCategoryService::findOne($model['category_id']);
+                $model['category_name'] = $category['name'];
+                $model['category_title'] = $category['title'];
+            }
+            if (!($model['group_id'] === $group_id)){
+                $group = DemandGroupService::findOne($model['group_id']);
+                $model['group_title'] = $group['name'];
+            }
+            if (!($model['area'] === $area_id)){
+                $area = DemandAreaService::findOne($model['area']);
+                $model['area_title'] = $area['area'];
+            }
             if($model->validate() == true && $model->save()){
                 $msg = array('errno'=>0, 'msg'=>'保存成功');
                 echo json_encode($msg);

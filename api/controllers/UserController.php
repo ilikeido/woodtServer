@@ -2,6 +2,8 @@
 
 namespace api\controllers;
 
+use api\models\Dynamic;
+use api\services\BaseService;
 use api\services\DemandService;
 use common\models\User;
 use Yii;
@@ -261,6 +263,18 @@ class UserController extends BaseController
     }
 
     /*
+     * 退出
+     */
+    public function actionLogout(){
+        $userInfo = $this->getUserBySessionToken();
+        $cookies = Yii::$app->request->cookies;
+        $cookies->remove('home_user_auth_auto_login');
+        $session = Yii::$app->session;
+        $session->close();
+        return  ['code'=>0,'msg'=>'','time'=>time()];
+    }
+
+    /*
      * 获取用户信息
      */
     public function actionGetinfo(){
@@ -282,7 +296,7 @@ class UserController extends BaseController
             return  ['code'=>1,'msg'=>'没有登录','time'=>time()];
         }else{
             $userInfo = $session[$token];
-            return  ['code'=>0,'msg'=>'','time'=>time(),'data'=>['uid'=>$userInfo['uid'],'nickname'=>$userInfo['nickname'],'avatar'=>$userInfo['avatar'],'mobile'=>$userInfo['mobile']]];
+            return  ['code'=>0,'msg'=>'','time'=>time(),'data'=>['uid'=>$userInfo['uid'],'nickname'=>$userInfo['nickname'],'avatar'=>BaseService::getImageBasePath() .$userInfo['avatar'],'mobile'=>$userInfo['mobile']]];
         }
     }
 
@@ -304,8 +318,10 @@ class UserController extends BaseController
      * 获取用户详情
      */
     protected function getUserDetail($uid){
-        $userService =  new UserAccountService();
-        $userDetail =  $userService->getUserDetail($uid);
+        $userDetail =  UserAccountService::getUserDetail($uid);
+        if (!empty($userDetail['avatar'])){
+            $userDetail['avatar'] = BaseService::getImageBasePath() . $userDetail['avatar'];
+        }
         return $userDetail;
     }
 
@@ -326,6 +342,9 @@ class UserController extends BaseController
         return  ['code'=>2,'msg'=>'','time'=>time(),'data'=>0];
     }
 
+    /*
+     * 添加供求信息
+     */
     public function actionAdddemand(){
         $userInfo = $this->getUserBySessionToken();
         if ($userInfo != null){
@@ -333,6 +352,9 @@ class UserController extends BaseController
             $group_id = Yii::$app->request->post('group_id');
             $category_id = Yii::$app->request->post('category_id');
             $content = Yii::$app->request->post('content');
+            if (!empty($content)){
+                $content = BaseService::ubb2html($content);
+            }
             $tags = Yii::$app->request->post('tags');
             $unit = Yii::$app->request->post('unit');
             $title = Yii::$app->request->post('title');
@@ -354,7 +376,9 @@ class UserController extends BaseController
             $model->uid = $userInfo['uid'];
             $model->area = $area_id;
             $model->area_title = $area->area;
-            $model->price = $price;
+            if (!empty($model->price)){
+                $model->price = $price;
+            }
             $model->address = $address;
             $model->buy_or_sale = $buy_or_sale;
             $model->number = $number;
@@ -366,6 +390,77 @@ class UserController extends BaseController
             }else{
                 return  ['code'=>2,'msg'=>$model->getErrors(),'time'=>time()];
             }
+        }else{
+            return  ['code'=>1,'msg'=>'没有登录','time'=>time()];
+        }
+    }
+
+    /*
+     * 添加供求信息
+     */
+    public function actionAdddynamic(){
+        $userInfo = $this->getUserBySessionToken();
+        if ($userInfo != null){
+            $model = new Dynamic();
+            $title = Yii::$app->request->post('title');
+            $content = Yii::$app->request->post('content');
+            $content = BaseService::ubb2html($content);
+            $model->title = $title;
+            $model->parse_content = $content;
+            $model->uid = $userInfo['uid'];
+            if ($model->validate() && $model->save()){
+                return  ['code'=>0,'msg'=>'','time'=>time()];
+            }else{
+                return  ['code'=>2,'msg'=>$model->getErrors(),'time'=>time()];
+            }
+        }else{
+            return  ['code'=>1,'msg'=>'没有登录','time'=>time()];
+        }
+    }
+
+    /*
+     * 设置用户信息
+     */
+    public function actionSetinfo(){
+        $userInfo = $this->getUserBySessionToken();
+        if ($userInfo != null) {
+            $model = UserAccountService::findOne($userInfo['uid']);
+            $avatar = Yii::$app->request->post('avatar');
+            if (empty($avatar) == false){
+                $userInfo['avatar'] = $avatar;
+                $model['avatar'] = $avatar;
+            }
+            $nickname = Yii::$app->request->post('nickname');
+            if ($nickname != null){
+                $userInfo['nickname'] = $nickname;
+                $model['nickname'] = $nickname;
+            }
+            $contact = Yii::$app->request->post('contact');
+            if ($contact != null){
+                $userInfo['contact'] = $contact;
+                $model['contact'] = $contact;
+            }
+            $email = Yii::$app->request->post('email');
+            if ($email != null){
+                $userInfo['email'] = $email;
+                $model['email'] = $email;
+            }
+            $product = Yii::$app->request->post('product');
+            if ($product != null){
+                $userInfo['product'] = $product;
+                $model['product'] = $product;
+            }
+            $content = Yii::$app->request->post('content');
+            if ($content != null){
+                $userInfo['content'] = $content;
+                $model['content'] = $content;
+            }
+            $model->save();
+            $cookies = Yii::$app->request->cookies;
+            $token = $cookies->getValue('home_user_auth_auto_login');
+            $session = Yii::$app->session;
+            $session[$token] = $userInfo;
+            return  ['code'=>0,'msg'=>'修改成功','time'=>time()];
         }else{
             return  ['code'=>1,'msg'=>'没有登录','time'=>time()];
         }

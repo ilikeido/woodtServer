@@ -3,6 +3,7 @@
 namespace api\controllers;
 
 use api\models\Review;
+use api\services\BaseService;
 use common\models\User;
 use Yii;
 use yii\data\Pagination;
@@ -28,8 +29,7 @@ class ReviewController extends BaseController
         $type = \yii::$app->request->post('type');
         $id = \yii::$app->request->post('id');
         $p = \yii::$app->request->post('p');
-        $service = new ReviewService();
-        return ['code'=>0,'msg'=>'','time'=>time(),'data'=>$service->getPage($type,$p,$id)];
+        return ['code'=>0,'msg'=>'','time'=>time(),'data'=>ReviewService::getPage($type,$p,$id)];
 //        $userinfo = $this->getUserBySessionToken();
 //        if ($userinfo != null){
 //            $query = (new Query())->select(['demand_tag.name AS name']) -> from('demand_tag')-> leftJoin('user_tag','user_tag.tagid = demand_tag.id')->where(['user_tag.uid'=>$userinfo['uid']]) ;

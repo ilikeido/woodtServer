@@ -14,7 +14,7 @@ use \yii\data\Pagination;
 
 class DemandService extends Demand {
 
-    public function getCatorysAndTag(){
+    public static function getCatorysAndTag(){
         $categroyQuery = (new Query())->select(['id','name','title'])->from('demand_category')->where(['flag'=>1])->orderBy('sort,id');
         $categories = $categroyQuery->all();
         $groupQuery = (new Query())->select(['id','category_id','name AS title'])->from('demand_group')->where(['flag'=>1])->orderBy('id');
@@ -47,7 +47,7 @@ class DemandService extends Demand {
     /*
      * 获取标签列表
      */
-    public function getTags($categoryid,$groupid){
+    public static function getTags($categoryid,$groupid){
         $tagQuery = (new Query())->select(['name'])->from('demand_tag')->where(['group_id'=>$groupid])->andWhere(['flag'=>1])->orderBy('id');
         $tags = $tagQuery->all();
         return $tags;
@@ -56,7 +56,7 @@ class DemandService extends Demand {
     /*
      * 获取类型列表
      */
-    public function getAllcatorys(){
+    public static function getAllcatorys(){
         $categroyQuery = (new Query())->select(['id','name','title'])->from('demand_category')->where(['flag'=>1])->orderBy('sort,id');
         $categories = $categroyQuery->all();
         $groupQuery = (new Query())->select(['id','category_id','name'])->from('demand_group')->where(['flag'=>1])->orderBy('id');
@@ -79,7 +79,7 @@ class DemandService extends Demand {
     /*
      * 获取供求详情
      */
-    public function getDetail($id){
+    public static function getDetail($id){
         $query = (new Query())->from('demand')->where(['id'=>$id]);
         $demand = $query->one();
         if ($demand != null){
@@ -107,12 +107,44 @@ class DemandService extends Demand {
         return Demand::findOne($id);
     }
 
+    /**
+     * @param $offset 偏移
+     * @param $limit  数量
+     * @param string $order  排序
+     * @return array  返回供求列表
+     */
+    public static function getDemandsWithUserList($offset,$limit,$order='id desc'){
+        $query = (new Query())->from('demand')->select(['id','uid','title','view','create_time','buy_or_sale'])->orderBy($order)->where(['flag' => 1]);
+        $query = $query->offset($offset)->limit($limit);
+        $result = $query->all();
+        $uids = array();
+        foreach ($result as &$item){
+            $createtime = $item['create_time'];
+            $createtimeFormat = BaseService::format_date(strftime($createtime));
+            $item['create_time_format'] = $createtimeFormat;
+            array_push($uids,$item['uid']);
+        }
+        $userQuery = (new Query())->from('user_account')->select(['uid','nickname','avatar','level_number'])->where(['in','uid',$uids]);
+        $users = $userQuery->all();
+        foreach ($result as &$item){
+            foreach ($users as $user){
+                if ($user['uid'] === $item['uid']){
+                    $item['user'] = $user;
+                    break;
+                }
+            }
+        }
+        return $result;
+    }
 
     /*
      * 获取供求列表
      */
-    public function getPage($root,$p=1,$uid,$catory='',$group='',$tag='',$area='',$order='pos'){
-        $query = (new Query())->from('demand')->select(['id','uid','title','view','create_time','buy_or_sale'])->where(['flag' => 1]);
+    public static function getPage($root,$p=1,$uid,$catory='',$group='',$tag='',$area='',$order='id desc'){
+        if($order == null){
+            $order = 'id desc';
+        }
+        $query = (new Query())->from('demand')->select(['id','uid','title','view','create_time','buy_or_sale'])->orderBy($order)->where(['flag' => 1]);
         if ($root === 'sale'){
             $query = $query->andWhere(['buy_or_sale'=>2]);
         }
@@ -120,7 +152,7 @@ class DemandService extends Demand {
             $query = $query->andWhere(['buy_or_sale'=>1]);
         }
         if(!empty($catory) && !($catory === 'demand')){
-            $query = $query->andWhere(['category_name'=>$catory]);
+            $query = $query->andWhere(['category_id'=>$catory]);
         }
         if(!empty($uid)){
             $query = $query->andWhere(['uid'=>$uid]);
@@ -129,17 +161,16 @@ class DemandService extends Demand {
             $query = $query->andWhere(['group_id'=>$group]);
         }
         if(!empty($tag)){
-            $query = $query->andWhere(['tags'=>$tag]);
+            $query = $query->andWhere(['like','title',$tag]);
         }
         if(!empty($area)){
             $query = $query->andWhere(['area'=>$area]);
         }
         $pagination = new Pagination([
                 'totalCount' =>$query->count(),
-                'pageSize' => '30',
-                'pageParam'=>'page',
-                'pageSizeParam'=>'per-page']
+                'pageSize' => '30',]
         );
+        $pagination->page = $p-1;
         if($order === 'time'){
             $query = $query->orderBy('create_time desc');
         }else if($order === 'price_desc'){

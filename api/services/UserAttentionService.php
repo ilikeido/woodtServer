@@ -13,7 +13,7 @@ class UserAttentionService extends UserAccount{
     /**
      * 判断是否关注
      */
-    public function attentionIsExits($uid,$tid){
+    public static function attentionIsExits($uid,$tid){
         $count = UserAttention::find()->where(['uid'=>$uid])->andWhere(['tid'=>$tid])->count();
         if ($count >0)
             return true;
@@ -23,8 +23,8 @@ class UserAttentionService extends UserAccount{
     /**
      * 增加关注
      */
-    public function addAttention($uid,$tid){
-        if ($this->attentionIsExits($uid,$tid)){
+    public static function addAttention($uid,$tid){
+        if (attentionIsExits($uid,$tid)){
             return true;
         }
         $model = new UserAttention();
@@ -38,7 +38,7 @@ class UserAttentionService extends UserAccount{
     /**
      * 删除关注
      */
-    public function delAttention($uid,$tid){
+    public static function delAttention($uid,$tid){
         UserAttention::deleteAll(['uid'=>$uid,'tid'=>$tid]);
         return true;
     }

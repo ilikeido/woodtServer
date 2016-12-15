@@ -29,8 +29,7 @@ class DynamicController extends BaseController
     public function actionGetlist(){
         $uid = Yii::$app->request->post('uid');
         $p = Yii::$app->request->post('p');
-        $dynamicService = new DynamicService();
-        $pagedata = $dynamicService->getPage($uid,$p);
+        $pagedata = DynamicService::getPage($uid,$p);
         $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>$pagedata];
         return $result;
     }
@@ -43,13 +42,30 @@ class DynamicController extends BaseController
         if ($type === 'all'){
 
         }
+        if ($type === 'auth'){//关注用户
+
+        }
+        $uid = '';
+        if ($type === 'attention'){//认证用户
+            $userinfo = $this->getUserBySessionToken();
+            $uid = $userinfo['uid'];
+        }
         $p = Yii::$app->request->post('p');
         $keyword = Yii::$app->request->post('keyword');
-        $dynamicService = new DynamicService();
-        $pagedata = $dynamicService->getPage(null,$p,$keyword);
+        $pagedata = DynamicService::getPage($type,$p,$keyword,$uid);
         $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>$pagedata];
         return $result;
 
+    }
+
+    /**
+     * 详情
+     */
+    public function actionDetail(){
+        $id = Yii::$app->request->post('id');
+        $dynamic = DynamicService::getDetail($id);
+        $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>$dynamic];
+        return $result;
     }
 
 }

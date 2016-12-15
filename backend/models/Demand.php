@@ -84,7 +84,7 @@ class Demand extends \backend\models\BaseModel
             'group_title' => Yii::t('app', '组名'),
             'address' => Yii::t('app', '地址'),
             'parse_content' => Yii::t('app', '内容'),
-            'uid' => Yii::t('app', 'Uid'),
+            'uid' => Yii::t('app', '会员编号'),
             'pos' => Yii::t('app', '推荐'),
             'flag' => Yii::t('app', '状态'),
             'sort' => Yii::t('app', '排序'),
