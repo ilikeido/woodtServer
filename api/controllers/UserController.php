@@ -5,6 +5,7 @@ namespace api\controllers;
 use api\models\Dynamic;
 use api\services\BaseService;
 use api\services\DemandService;
+use api\services\DynamicService;
 use common\models\User;
 use Yii;
 use yii\data\Pagination;
@@ -393,6 +394,35 @@ class UserController extends BaseController
         }else{
             return  ['code'=>1,'msg'=>'没有登录','time'=>time()];
         }
+    }
+
+    /*
+     * 删除供求信息
+     */
+    public function actionDeldemand(){
+        $id = Yii::$app->request->post('id');
+        $model = DemandService::getDemandById($id);
+        if ($model){
+            $model['flag'] = 0;
+            $model->save();
+            return  ['code'=>0,'msg'=>'','time'=>time()];
+        }
+        return  ['code'=>2,'msg'=>'未找到记录','time'=>time()];
+    }
+
+
+    /*
+     * 删除供求信息
+     */
+    public function actionDeldynamic(){
+        $id = Yii::$app->request->post('id');
+        $model = DynamicService::findOne($id);
+        if ($model){
+            $model['flag'] = 0;
+            $model->save();
+            return  ['code'=>0,'msg'=>'','time'=>time()];
+        }
+        return  ['code'=>2,'msg'=>'未找到记录','time'=>time()];
     }
 
     /*

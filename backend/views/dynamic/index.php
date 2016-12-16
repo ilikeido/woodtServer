@@ -12,7 +12,9 @@ $modelLabel = new \backend\models\Dynamic();
 ?>
 
 <?php $this->beginBlock('header');  ?>
-<!-- <head></head>中代码块 -->
+<script src="<?=Url::base()?>/plugins/ckeditor/ckeditor.js"></script>
+<script src="<?=Url::base()?>/plugins/ckeditor/styles.js"></script>
+<script src="<?=Url::base()?>/plugins/ckeditor/lang/zh.js"></script>
 <?php $this->endBlock(); ?>
 
 <!-- Main content -->
@@ -64,7 +66,6 @@ $modelLabel = new \backend\models\Dynamic();
 		      echo '<th><input id="data_table_check" type="checkbox"></th>';
               echo '<th onclick="orderby(\'id\', \'desc\')" '.CommonFun::sortClass($orderby, 'id').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('id').'</th>';
               echo '<th onclick="orderby(\'title\', \'desc\')" '.CommonFun::sortClass($orderby, 'title').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('title').'</th>';
-              echo '<th onclick="orderby(\'parse_content\', \'desc\')" '.CommonFun::sortClass($orderby, 'parse_content').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('parse_content').'</th>';
               echo '<th onclick="orderby(\'create_time\', \'desc\')" '.CommonFun::sortClass($orderby, 'create_time').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('create_time').'</th>';
               echo '<th onclick="orderby(\'uid\', \'desc\')" '.CommonFun::sortClass($orderby, 'uid').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('uid').'</th>';
 			  echo '<th onclick="orderby(\'pos\', \'desc\')" '.CommonFun::sortClass($orderby, 'pos').' tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-sort="ascending" >'.$modelLabel->getAttributeLabel('pos').'</th>';
@@ -84,7 +85,6 @@ $modelLabel = new \backend\models\Dynamic();
                 echo '  <td><label><input type="checkbox" value="' . $model->id . '"></label></td>';
                 echo '  <td>' . $model->id . '</td>';
                 echo '  <td>' . $model->title . '</td>';
-                echo '  <td>' . $model->parse_content . '</td>';
                 echo '  <td>' . $model->create_time . '</td>';
                 echo '  <td>' . $model->uid . '</td>';
 				echo '  <td> <a onclick="posAction(' . $model->id .',this)">' . ($model->pos===1?'推荐':'未推荐') . '</a></td>';
@@ -143,9 +143,9 @@ $modelLabel = new \backend\models\Dynamic();
 <!-- /.content -->
 
 <div class="modal fade" id="edit_dialog" tabindex="-1" role="dialog"
-	aria-labelledby="myModalLabel" aria-hidden="true">
+	aria-labelledby="myModalLabel" aria-hidden="true" >
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content" style="width: 900px">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">×</button>
 				<h3>Settings</h3>
@@ -166,23 +166,8 @@ $modelLabel = new \backend\models\Dynamic();
           <div id="parse_content_div" class="form-group">
               <label for="parse_content" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("parse_content")?></label>
               <div class="col-sm-10">
-                  <input type="text" class="form-control" id="parse_content" name="Dynamic[parse_content]" placeholder="必填" />
-              </div>
-              <div class="clearfix"></div>
-          </div>
-
-          <div id="create_time_div" class="form-group">
-              <label for="create_time" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("create_time")?></label>
-              <div class="col-sm-10">
-                  <input type="text" class="form-control" id="create_time" name="Dynamic[create_time]" placeholder="必填" />
-              </div>
-              <div class="clearfix"></div>
-          </div>
-
-          <div id="flag_div" class="form-group">
-              <label for="flag" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("flag")?></label>
-              <div class="col-sm-10">
-                  <input type="text" class="form-control" id="flag" name="Dynamic[flag]" placeholder="必填" />
+				  <input type="hidden"  id="parse_content" name="Dynamic[parse_content]" placeholder="必填" />
+				  <textarea  id="editor" name="editor" ></textarea>
               </div>
               <div class="clearfix"></div>
           </div>
@@ -207,6 +192,7 @@ $modelLabel = new \backend\models\Dynamic();
 </div>
 <?php $this->beginBlock('footer');  ?>
 <!-- <body></body>后代码块 -->
+<script src="<?=Url::base()?>/plugins/ckeditor/bootstrap-ckeditor-fix.js"></script>
  <script>
 function orderby(field, op){
 	 var url = window.location.search;
@@ -240,25 +226,20 @@ function orderby(field, op){
 		$("#id").val('');
 		$("#title").val('');
 		$("#parse_content").val('');
-		$("#create_time").val('');
-		$("#flag").val('');
 		$("#uid").val('');
-		
 	}
 	else{
 		$("#id").val(data.id);
     	$("#title").val(data.title);
     	$("#parse_content").val(data.parse_content);
-    	$("#create_time").val(data.create_time);
-    	$("#flag").val(data.flag);
+		$("#editor").val(data.parse_content);
     	$("#uid").val(data.uid);
     	}
 	if(type == "view"){
       $("#id").attr({readonly:true,disabled:true});
       $("#title").attr({readonly:true,disabled:true});
       $("#parse_content").attr({readonly:true,disabled:true});
-      $("#create_time").attr({readonly:true,disabled:true});
-      $("#flag").attr({readonly:true,disabled:true});
+	  $("#editor").attr({readonly:true,disabled:true});
       $("#uid").attr({readonly:true,disabled:true});
 	$('#edit_dialog_ok').addClass('hidden');
 	}
@@ -266,12 +247,23 @@ function orderby(field, op){
       $("#id").attr({readonly:false,disabled:false});
       $("#title").attr({readonly:false,disabled:false});
       $("#parse_content").attr({readonly:false,disabled:false});
-      $("#create_time").attr({readonly:false,disabled:false});
-      $("#flag").attr({readonly:false,disabled:false});
+	  $("#editor").attr({readonly:false,disabled:false});
       $("#uid").attr({readonly:false,disabled:false});
 		$('#edit_dialog_ok').removeClass('hidden');
 		}
 		$('#edit_dialog').modal('show');
+	 if( !CKEDITOR.instances['editor'] ){
+		 var meditor =CKEDITOR.replace( 'editor', {
+			 uiColor: '#9AB8F3',filebrowserUploadUrl:'/upload/ckimage',
+			 filebrowserImageUploadUrl: '/upload/ckimage'
+		 });
+		 meditor.on( 'change', function( evt ) {
+			 $("#parse_content").val(evt.editor.getData());
+		 });
+	 }else{
+		 CKEDITOR.instances['editor'].setData(data.parse_content?data.parse_content:'');
+	 }
+
 }
 
 function posAction(id,even){

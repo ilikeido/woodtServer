@@ -179,7 +179,7 @@ $modelLabel = new \backend\models\AdvertCategory();
           <div id="ios_size_div" class="form-group">
               <label for="ios_size" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("ios_size")?></label>
               <div class="col-sm-10">
-                  <input type="text" class="form-control" id="ios_size" name="AdvertCategory[ios_size]" placeholder="必填" />
+                  <input type="text" class="form-control" id="ios_size" name="AdvertCategory[ios_size]"/>
               </div>
               <div class="clearfix"></div>
           </div>
@@ -187,7 +187,7 @@ $modelLabel = new \backend\models\AdvertCategory();
           <div id="android_size_div" class="form-group">
               <label for="android_size" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("android_size")?></label>
               <div class="col-sm-10">
-                  <input type="text" class="form-control" id="android_size" name="AdvertCategory[android_size]" placeholder="必填" />
+                  <input type="text" class="form-control" id="android_size" name="AdvertCategory[android_size]" />
               </div>
               <div class="clearfix"></div>
           </div>

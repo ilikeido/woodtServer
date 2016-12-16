@@ -29,7 +29,7 @@ class Dynamic extends \backend\models\BaseModel
     public function rules()
     {
         return [
-            [['title', 'parse_content', 'flag', 'uid'], 'required'],
+            [['title', 'parse_content',  'uid'], 'required'],
             [['parse_content'], 'string'],
             [['create_time'], 'safe'],
             [['flag', 'uid','pos'], 'integer'],
@@ -47,9 +47,9 @@ class Dynamic extends \backend\models\BaseModel
             'title' => Yii::t('app', '标题'),
             'parse_content' => Yii::t('app', '内容'),
             'create_time' => Yii::t('app', '创建时间'),
-            'flag' => Yii::t('app', 'Flag'),
+            'flag' => Yii::t('app', '是否可用'),
             'pos' => Yii::t('app', '推荐'),
-            'uid' => Yii::t('app', 'Uid'),
+            'uid' => Yii::t('app', '用户编号'),
         ];
     }
 

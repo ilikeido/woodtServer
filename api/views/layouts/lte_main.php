@@ -94,7 +94,7 @@ if($otherMenu == false){
   <!-- jQuery 2.2.3 -->
   <script src="<?=Url::base()?>/plugins/jQuery/jquery-2.2.3.min.js"></script>
 
-  
+
   <script>
     $(function($){
         window.admin_tool = function(){
@@ -103,7 +103,7 @@ if($otherMenu == false){
             		$('#confirm_content').text(content);
           			$('#confirm_dialog_ok').click(function(){
           				ok_fun();
-          				$('#confirm_dialog').modal('hide'); 
+          				$('#confirm_dialog').modal('hide');
           			});
           			$('#confirm_dialog').modal('show');
           		},
@@ -135,10 +135,10 @@ if($otherMenu == false){
         		this.checked = b;
         	});
         });
-        
+
   	});
     </script>
-  
+
 <?php if(isset($this->blocks['header']) == true):?>
 <?= $this->blocks['header'] ?>
 <?php endif;?>
@@ -153,7 +153,7 @@ if($otherMenu == false){
 				<h3>请确认</h3>
 			</div>
 			<div id="confirm_content" class="modal-body">
-                
+
             </div>
 			<div class="modal-footer">
 				<a id="confirm_dialog_cancel" href="#" class="btn btn-default" data-dismiss="modal">关闭</a> <a
@@ -191,19 +191,19 @@ if($otherMenu == false){
               <span class="hidden-xs"><?php echo Yii::$app->user->identity->uname;?>&nbsp;&nbsp;</span>
               <span class="fa fa-caret-down"></span>
             </a>
-             
+
               <ul class="dropdown-menu">
               <!-- User image -->
-              
+
               <!-- Menu Body -->
               <li class="user-body">
               	<ul class="menu">
             		<li><a href="<?=Url::toRoute('site/psw')?>"><i class="fa fa-cog"></i> 修改密码</a></li>
                 	<li><a href="<?=Url::toRoute('site/logout')?>" data-method="post"><i class="fa fa-sign-out"></i> 退出</a></li>
             	</ul>
-            
+
             </ul>
-              
+
           </li>
           <!-- Control Sidebar Toggle Button -->
           <li>
@@ -217,20 +217,20 @@ if($otherMenu == false){
   <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
-    
+
       <!-- Sidebar user panel -->
-      
+
       <div class="user-panel">
         <div class="pull-left image">
           <span class="glyphicon glyphicon-user" style="font-size: 50px"></span>
         </div>
-        
+
         <div class="pull-left info">
           <p><?php echo Yii::$app->user->identity->uname;?></p>
           <a href="<?=Url::toRoute('site/logout')?>"><i class="fa fa-circle text-success"></i>退出</a>
         </div>
       </div>
-       <!-- 
+       <!--
        <div class="user-panel">
         <div class="pull-left image">
           <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
@@ -240,24 +240,24 @@ if($otherMenu == false){
           <a href="<?=Url::toRoute('site/logout')?>"><i class="fa fa-circle text-success"></i>退出</a>
         </div>
       </div>   -->
-    
+
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu">
         <li class="header">菜单项</li>
 
         <li <?=$route == 'site/index' ?  ' class="active" ' : ''?>>
         	<a href="<?=Url::to(['site/index'])?>">
-        	<i class="fa fa-dashboard"></i> 
+        	<i class="fa fa-dashboard"></i>
         	<span>首页</span>
         	</a>
         </li>
-        <?php 
-        
+        <?php
+
 			foreach($system_menus as $menu){
 			    $funcList = $menu['funcList'];
 			    $isMenuActive = '';
 			    $isTreeView = count($funcList) > 0 ? "treeview" : "";
-			    $menuHtml = '<li class="#isMenuActive#'. $isTreeView .'">'; // active 
+			    $menuHtml = '<li class="#isMenuActive#'. $isTreeView .'">'; // active
 			    $menuHtml .= '   <a href="#">';
 			    $menuHtml .= '   <i class="fa fa-table"></i> <span>'. $menu['label'] .'</span>';
 			    $menuHtml .= '   <span class="pull-right-container">';
@@ -281,20 +281,20 @@ if($otherMenu == false){
 			    echo $menuHtml;
 			}
 		?>
-        
-  
+
+
       </ul>
     </section>
     <!-- /.sidebar -->
   </aside>
 
   <!-- Content Wrapper. Contains page content -->
-  
+
   <div class="content-wrapper">
     <section class="content-header">
-     
+
       <h1> <?=$funInfo['menu_name']?> <small>
-      
+
       </small></h1>
       <ol class="breadcrumb breadcrumb-quirk">
         <li><a href="<?=Url::toRoute('site/index')?>"><i class="fa fa-dashboard"></i> 首页</a></li>
@@ -303,18 +303,18 @@ if($otherMenu == false){
         if(isset($funInfo['module_name']) == true && isset($funInfo['menu_name']) == true){
             echo '<li><a href="#">'.$funInfo['module_name'].'</a></li>';
             echo '<li><a href="'.Url::toRoute($funInfo['entry_url']).'">'.$funInfo['menu_name'].'</a></li>';
-          
+
         }
         ?>
       </ol>
     </section>
-    
-      
-   
-    
-    
+
+
+
+
+
   <?= $content ?>
-  
+
   </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
@@ -328,7 +328,7 @@ if($otherMenu == false){
   <!-- Control Sidebar -->
   <aside class="control-sidebar control-sidebar-dark">
     <!-- Create the tabs -->
-    <!-- 
+    <!--
     <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
       <li><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
       <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
@@ -538,7 +538,7 @@ if($otherMenu == false){
 <script src="<?=Url::base()?>/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
 <!-- jQuery Knob Chart -->
 <script src="<?=Url::base()?>/plugins/knob/jquery.knob.js"></script>
- 
+
 <!-- daterangepicker -->
 <script src="<?=Url::base()?>/libs/moment.min.js"></script>
 <script src="<?=Url::base()?>/plugins/daterangepicker/daterangepicker.js"></script>

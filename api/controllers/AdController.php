@@ -26,11 +26,11 @@ class AdController extends BaseController
     {
         $name = Yii::$app->request->post('name');
         $os = Yii::$app->request->post('os');
-        $query = AdvertService::find()->select(['id','title','level','description','banner_url','goto','record_id'])->asArray();
+        $query = AdvertService::find()->select(['id','title','level','description','banner_url','goto','record_id']);
         if (!empty($name)){
             $query->where(['category_name'=>$name]);
         }
-        $query->orderBy('level desc,id desc');
+        $query->orderBy('level DESC,id DESC');
         $ads = $query->all();
         return ['code'=>0,'msg'=>"",'time'=>time(),'data'=>$ads];
 

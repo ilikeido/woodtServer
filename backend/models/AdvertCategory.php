@@ -31,7 +31,7 @@ class AdvertCategory extends \backend\models\BaseModel
     public function rules()
     {
         return [
-            [['name', 'title', 'ios_size', 'android_size'], 'required'],
+            [['name', 'title'], 'required'],
             [['name', 'title', 'descript', 'ios_size', 'android_size'], 'string', 'max' => 255]
         ];
     }

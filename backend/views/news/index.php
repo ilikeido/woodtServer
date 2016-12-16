@@ -249,8 +249,7 @@ $modelLabel = new \backend\models\News();
 	</div>
 </div>
 <?php $this->beginBlock('footer');  ?>
-<!-- <body></body>后代码块 -->
-<!-- <body></body>后代码块 -->
+<script src="<?=Url::base()?>/plugins/ckeditor/bootstrap-ckeditor-fix.js"></script>
 <style>
 	.kv-avatar .file-preview-frame,.kv-avatar .file-preview-frame:hover {
 		margin: 0;
@@ -293,6 +292,7 @@ function orderby(field, op){
 		initModel(id, 'view', 'fun');
 	}
 
+var imageBasePath = "http://static.testwoodt.com";
  function initEditSystemModule(data, type){
 	if(type == 'create'){
 		$("#id").val('');
@@ -303,6 +303,7 @@ function orderby(field, op){
 		$("#cover_id").val('');
 		$("#cover_thumb_url").val('');
 		$("#parse_content").val('');
+		$("#editor").val('');
 	}
 	else{
 		$("#id").val(data.id);
@@ -322,6 +323,7 @@ function orderby(field, op){
       $("#category").attr({readonly:true,disabled:true});
       $("#tags").attr({readonly:true,disabled:true});
       $("#parse_content").attr({readonly:true,disabled:true});
+		$("#editor").attr({readonly:true,disabled:true});
 		$('#edit_dialog_ok').addClass('hidden');
 		$("#input-image").attr({readonly:true,disabled:true});
 	}
@@ -332,25 +334,29 @@ function orderby(field, op){
       $("#category").attr({readonly:false,disabled:false});
       $("#tags").attr({readonly:false,disabled:false});
       $("#parse_content").attr({readonly:false,disabled:false});
+		$("#editor").attr({readonly:false,disabled:false});
 		$('#edit_dialog_ok').removeClass('hidden');
 		}
 		$('#edit_dialog').modal('show');
 //	 var ckpath = '<?//=Url::base()?>///plugins/';
 	 initEditIconAction(data.cover_thumb_url);
-	 $(".file-default-preview").html('<img src="' + imageBasePath +  $('#banner_url').val() + '" alt="图标" style="width:150px">');
-	 var meditor =CKEDITOR.replace( 'editor', {
-		 uiColor: '#9AB8F3',
-		 // Configure your file manager integration. This example uses CKFinder 3 for PHP.
-//		 filebrowserBrowseUrl: ckpath + 'ckfinder/ckfinder.html',
-//		 filebrowserImageBrowseUrl: ckpath +'ckfinder/ckfinder.html?type=Images',
-//		 filebrowserUploadUrl: ckpath + 'ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files',
-		 filebrowserUploadUrl:'/upload/ckimage',
-		 filebrowserImageUploadUrl: '/upload/ckimage'
-//		 filebrowserImageUploadUrl: ckpath + 'ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images'
-	 });
-	 meditor.on( 'change', function( evt ) {
-		 $("#parse_content").val(evt.editor.getData());
-	 });
+	 if($('#cover_thumb_url').val()){
+		 $(".file-default-preview").html('<img src="' + imageBasePath +  $('#cover_thumb_url').val() + '" alt="图标" style="width:150px">');
+	 }else{
+		 $(".file-default-preview").html('<img src="" alt="图标" style="width:150px">');
+	 }
+	 if( !CKEDITOR.instances['editor'] ){
+		 var meditor =CKEDITOR.replace( 'editor', {
+			 uiColor: '#9AB8F3',filebrowserUploadUrl:'/upload/ckimage',
+			 filebrowserImageUploadUrl: '/upload/ckimage'
+		 });
+		 meditor.on( 'change', function( evt ) {
+			 $("#parse_content").val(evt.editor.getData());
+		 });
+	 }else{
+		 CKEDITOR.instances['editor'].setData(data.parse_content?data.parse_content:'');
+	 }
+
 }
 
 function initEditIconAction($cover_thumb_url) {

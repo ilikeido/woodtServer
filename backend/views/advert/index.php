@@ -202,6 +202,7 @@ $modelLabel = new \backend\models\Advert();
 					  <option>请选择</option>
 					  <option value="news">新闻</option>
 					  <option value="demand">供求</option>
+					  <option value="link">链接</option>
 				  </select>
               </div>
               <div class="clearfix"></div>
@@ -210,7 +211,7 @@ $modelLabel = new \backend\models\Advert();
           <div id="record_id_div" class="form-group">
               <label for="record_id" class="col-sm-2 control-label">内容</label>
               <div class="col-sm-10">
-                  <input type="text" class="form-control" id="record_id" name="Advert[record_id]" placeholder="供求或新闻：填写相应的内容编号" />
+                  <input type="text" class="form-control" id="record_id" name="Advert[record_id]" placeholder="供求或新闻：填写相应的内容编号,链接填写页面地址" />
               </div>
               <div class="clearfix"></div>
           </div>
