@@ -3,6 +3,8 @@ namespace api\services;
 
 use api\models\UserEvendata;
 use yii\helpers\ArrayHelper;
+use \yii\db\Query;
+use \yii\data\Pagination;
 
 class UserEvendataService extends UserEvendata{
 
@@ -10,6 +12,7 @@ class UserEvendataService extends UserEvendata{
      * 获取动态列表
      */
     public static function getPage($p=1,$tag=''){
+
         $query = (new Query())->from('user_evendata')->select(['uid','nickname','avatar','product','contact','last_update_time','level_number','dynamic_id','demand_count', 'dynamic_count']);
         if (!empty($tag)){
             $query -> where(['or', ['like','product',$tag],['like','nickname',$tag]]);

@@ -24,6 +24,9 @@ use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use api\controllers\BaseController;
 use api\services\UserAccountService;
+
+require_once (Yii::$app->basePath."/components/taobao-sdk/TopSdk.php");
+
 /**
  * TestController implements the CRUD actions for Test model.
  */
@@ -94,7 +97,9 @@ class UserController extends BaseController
      * 发送注册验证码
      */
     public function  actionSendregistercode(){
+
         $mobile = Yii::$app->request->post('mobile');
+
         $count = (new \yii\db\Query())
             ->from('user_account')
             ->where('mobile=:mobile', [':mobile' => $mobile])
@@ -117,7 +122,7 @@ class UserController extends BaseController
         $msg->message_type = 1;
         $msg->message = $randCode;
         $msg->save();
-        $this->sendMsg('您的验证码是'.$randCode.'。如非本人操作，请忽略本短信。');
+        $this->sendMsg('注册验证','SMS_34840079',"{\"code\":\"".$randCode."\",\"product\":\"点木通\"}",$mobile);
         return  ['code'=>0,'msg'=>'验证码已发送','time'=>time()];
     }
 
@@ -148,7 +153,7 @@ class UserController extends BaseController
         $msg->message_type = 2;
         $msg->message = $randCode;
         $msg->save();
-        $this->sendMsg('正在找回密码，您的验证码是'.$randCode.'。如非本人操作，请忽略本短信。');
+        $this->sendMsg('身份验证','SMS_34840083',"{\"code\":\"".$randCode."\",\"product\":\"点木通\"}",$mobile);
         return  ['code'=>0,'msg'=>'验证码已发送','time'=>time()];
     }
 
@@ -203,10 +208,18 @@ class UserController extends BaseController
      * @param string $msg   消息
      * @return boolean   发送验证码成功或失败
      */
-    protected  function sendMsg($msg = ''){
-        $mymssgae = $msg;
+    protected  function sendMsg($signName,$templateCode,$param='',$mobile){
         //TODO
-
+        $c = new \TopClient();
+        $c->appkey = '23573930';
+        $c->secretKey = 'a959f26fe761a6cb55f0ab3c14f119d2';
+        $req = new \AlibabaAliqinFcSmsNumSendRequest;
+        $req->setSmsType("normal");
+        $req->setSmsFreeSignName($signName);
+        $req->setSmsParam($param);
+        $req->setRecNum($mobile);
+        $req->setSmsTemplateCode($templateCode);
+        $resp = $c->execute($req);
         return true;
     }
 

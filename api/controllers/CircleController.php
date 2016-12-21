@@ -28,15 +28,11 @@ class CircleController extends BaseController
 {
     public function actionGetlist(){
 
-        $query = UserEvendataService::find()->select(['uid','nickname','avatar','product','contact','last_update_time','level_number','dynamic_id','demand_count', 'dynamic_count']);
         $p = Yii::$app->request->post('p');
         $tag = Yii::$app->request->post('tag');
-        if (!empty($tag)){
-
-        }
-
-        $query->orderBy('last_update_time DESC');
-
+        $datas = UserEvendataService::getPage($p,$tag);
+        $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>$datas];
+        return $result;
     }
 
 }
