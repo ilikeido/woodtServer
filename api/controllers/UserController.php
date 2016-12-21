@@ -3,9 +3,11 @@
 namespace api\controllers;
 
 use api\models\Dynamic;
+use api\models\UserEvendata;
 use api\services\BaseService;
 use api\services\DemandService;
 use api\services\DynamicService;
+use api\services\UserEvendataService;
 use common\models\User;
 use Yii;
 use yii\data\Pagination;
@@ -335,6 +337,16 @@ class UserController extends BaseController
         $userDetail =  UserAccountService::getUserDetail($uid);
         if (!empty($userDetail['avatar'])){
             $userDetail['avatar'] = BaseService::getImageBasePath() . $userDetail['avatar'];
+        }
+        $userEvendata = UserEvendataService::find()->where(['uid'=>$uid])->one();
+        if ($userEvendata){
+            $userDetail['demand_count'] = $userEvendata['demand_count'];
+            $userDetail['dynamic_count'] = $userEvendata['dynamic_count'];
+            $userDetail['attention_count'] = $userEvendata['attention_count'];
+            $userDetail['collection_count'] = $userEvendata['collection_count'];
+            $userDetail['fans_count'] = $userEvendata['fans_count'];
+            $userDetail['friend_count'] = $userEvendata['friend_count'];
+            $userDetail['notify_count'] = $userEvendata['notify_count'];
         }
         return $userDetail;
     }
