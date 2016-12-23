@@ -107,6 +107,9 @@ class DemandCategoryController extends BaseController
             $msg = array('errno'=>2, 'msg'=>'数据出错');
             echo json_encode($msg);
         }
+        CacheTool::restDependencyValue(CacheTool::CACHEKEY_GET_CATORY_AND_TAG);
+        CacheTool::restDependencyValue(CacheTool::CACHEKEY_GET_ALL_CATORYS);
+
     }
 
     /**
@@ -133,7 +136,8 @@ class DemandCategoryController extends BaseController
             $msg = array('errno'=>2, 'msg'=>'数据出错');
             echo json_encode($msg);
         }
-    
+        CacheTool::restDependencyValue(CacheTool::CACHEKEY_GET_CATORY_AND_TAG);
+        CacheTool::restDependencyValue(CacheTool::CACHEKEY_GET_ALL_CATORYS);
     }
 
     /**
@@ -151,6 +155,8 @@ class DemandCategoryController extends BaseController
         else{
             echo json_encode(array('errno'=>2, 'msg'=>''));
         }
+        CacheTool::restDependencyValue(CacheTool::CACHEKEY_GET_CATORY_AND_TAG);
+        CacheTool::restDependencyValue(CacheTool::CACHEKEY_GET_ALL_CATORYS);
     }
 
     /**

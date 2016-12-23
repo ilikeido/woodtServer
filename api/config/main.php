@@ -51,7 +51,18 @@ $config = [
             'rules' => [
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'areas','pluralize' => false,],
             ],
-        ]
+        ],
+        'cache' => [
+            'class' => 'yii\caching\MemCache',
+            'servers' => [
+                [
+                    'host' => 'localhost',
+                    'port' => 11211
+                ],
+            ],
+            'useMemcached' => true ,
+        ],
+
     ],
     'params' => $params,
     'language'=>'zh-CN'

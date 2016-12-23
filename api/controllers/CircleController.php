@@ -35,4 +35,11 @@ class CircleController extends BaseController
         return $result;
     }
 
+    public function actionDetail(){
+        $uid = Yii::$app->request->post('uid');
+        $user = UserEvendataService::getDetail($uid);
+        $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>$user];
+        return $result;
+    }
+
 }

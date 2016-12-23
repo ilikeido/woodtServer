@@ -2,6 +2,7 @@
 
 namespace api\controllers;
 
+use api\services\CacheService;
 use api\services\DemandService;
 use api\services\DemandAreaService;
 use Yii;
@@ -17,6 +18,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use api\controllers\BaseController;
+
 
 /**
  * TestController implements the CRUD actions for Test model.
@@ -40,11 +42,16 @@ class DemandController extends BaseController
      */
     public  function actionGetAllCategoryAndTag(){
         $cache = Yii::$app->cache;
-        $value = false;//$cache->get('AllCatoryAndTag');
-        if($value == false){
+        $key = CacheService::CACHEKEY_GET_CATORY_AND_TAG;
+        if(!$cache->exists($key)){
             $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>DemandService::getCatorysAndTag()];
+            $dependency = new \yii\caching\ExpressionDependency(
+                ['expression'=> 'CacheService::getDependencyValue(\''.$key.'\')']
+            );
+            $cache->add($key,$result,0,$dependency);
             return $result;
         }else{
+            $value = $cache->get(CacheService::CACHEKEY_GET_CATORY_AND_TAG);
             return $value;
         }
     }
@@ -54,13 +61,13 @@ class DemandController extends BaseController
      */
     public  function actionGetallcategory(){
         $cache = Yii::$app->cache;
-        $value = false;//$cache->get('AllCatoryAndTag');
-        if($value == false){
+        $value = $cache->get(CacheService::CACHEKEY_GET_ALL_CATORYS);
+        if($value == null){
             $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>DemandService::getAllcatorys()];
-//            $dependency = new \yii\caching\ExpressionDependency(
-//                ['expression'=> $cache->get('category-group-tag-updateTime')]
-//            );
-//            $cache->add('AllCatoryAndTag',$result,0,$dependency);
+            $dependency = new \yii\caching\ExpressionDependency(
+                ['expression'=> CacheService::getDependencyValue(CacheService::CACHEKEY_GET_ALL_CATORYS)]
+            );
+            $cache->add(CacheService::CACHEKEY_GET_ALL_CATORYS,$result,0,$dependency);
             return $result;
         }else{
             return $value;
