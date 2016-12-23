@@ -65,7 +65,7 @@ class UploadController extends Controller
         if (Yii::$app->request->isPost) {
             $model->file = UploadedFile::getInstance($model,'file');
             //文件上传存放的目录
-            $dir = '/Users/ilikeido/work/php/woodtServer/static/'.date("Ymd");
+            $dir = Yii::$app->basePath.'/../static/'.date("Ymd");
             if (!is_dir($dir)){
                 mkdir($dir);
             }

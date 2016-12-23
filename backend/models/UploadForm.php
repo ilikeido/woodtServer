@@ -2,7 +2,7 @@
 namespace backend\models;
 
 use Yii;
-use yii\base\model;
+use yii\base\Model;
 use yii\web\UploadedFile;
 /**
  * UploadForm is the model behind the upload form.
