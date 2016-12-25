@@ -21,6 +21,7 @@ class BaseController extends Controller
 
     public function behaviors()
     {
+        Yii::error('start');
         $behaviors = parent::behaviors();
 //        $behaviors['authenticator'] = [
 //            'class' => QueryParamAuth::className(),

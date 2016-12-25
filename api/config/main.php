@@ -32,12 +32,12 @@ $config = [
 //            'sessionTable' => 'my_session', // session 数据表名，默认为'session'.
         ],
         'log' => [
-            'traceLevel' => YII_DEBUG ? 3 : 0,
+//            'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
                 [
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
-                    'logVars' => [],
+                    'logFile' => '@runtime/log/error.log',
                 ],
             ],
         ],

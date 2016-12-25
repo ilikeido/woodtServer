@@ -9,6 +9,11 @@ use yii\filters\VerbFilter;
 
 class SiteController extends Controller
 {
-
+    public function actionError()
+    {
+        if (\Yii::$app->exception !== null) {
+            return $this->render('error', ['exception' => \Yii::$app->exception]);
+        }
+    }
 
 }

@@ -40,7 +40,8 @@ class UserDeviceController extends BaseController
         $model['tencent_push_token'] = $tencent_push_token;
         $ip = Yii::$app->request->userIP;
         $model['ip'] = $ip;
-        $token = $_COOKIE['home_user_auth_auto_login'];
+        $cook = \yii::$app->request->getCookies();
+        $token = $cook['home_user_auth_auto_login'];
         $session = Yii::$app->session;
         if (!$session->isActive || $token == null || $session[$token] == null){
 

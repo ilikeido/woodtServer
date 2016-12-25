@@ -50,7 +50,7 @@ class DemandController extends BaseController
             );
             $cache->add($key,$result,0,$dependency);
             return $result;
-        }else if (empty($cache->get($key))){
+        }else if ($cache->get($key) == null){
             $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>DemandService::getCatorysAndTag()];
             $dependency = new \yii\caching\ExpressionDependency(
                 ['expression'=> '\api\services\CacheService::getDependencyValue(\api\services\CacheService::CACHEKEY_GET_CATORY_AND_TAG)']
@@ -76,7 +76,7 @@ class DemandController extends BaseController
             );
             $cache->add($key,$result,0,$dependency);
             return $result;
-        }else if (empty($cache->get($key))){
+        }else if ($cache->get($key) == null){
             $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>DemandService::getAllcatorys()];
             $dependency = new \yii\caching\ExpressionDependency(
                 ['expression'=> '\api\services\CacheService::getDependencyValue(\api\services\CacheService::CACHEKEY_GET_ALL_CATORYS)']
