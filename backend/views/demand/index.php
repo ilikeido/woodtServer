@@ -12,7 +12,9 @@ $modelLabel = new \backend\models\Demand();
 ?>
 
 <?php $this->beginBlock('header');  ?>
-<!-- <head></head>中代码块 -->
+<script src="<?=Url::base()?>/plugins/ckeditor/ckeditor.js"></script>
+<script src="<?=Url::base()?>/plugins/ckeditor/styles.js"></script>
+<script src="<?=Url::base()?>/plugins/ckeditor/lang/zh.js"></script>
 <?php $this->endBlock(); ?>
 
 <!-- Main content -->
@@ -290,8 +292,9 @@ $modelLabel = new \backend\models\Demand();
           <div id="parse_content_div" class="form-group">
               <label for="parse_content" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("parse_content")?></label>
               <div class="col-sm-10">
-                  <input type="text" class="form-control" id="parse_content" name="Demand[parse_content]" placeholder="必填" />
-              </div>
+                  <input type="hidden"  id="parse_content" name="Demand[parse_content]" placeholder="必填" />
+				  <textarea  id="editor" name="editor" ></textarea>
+			  </div>
               <div class="clearfix"></div>
           </div>
 
@@ -313,7 +316,7 @@ $modelLabel = new \backend\models\Demand();
 	</div>
 </div>
 <?php $this->beginBlock('footer');  ?>
-<!-- <body></body>后代码块 -->
+<script src="<?=Url::base()?>/plugins/ckeditor/bootstrap-ckeditor-fix.js"></script>
  <script>
 function orderby(field, op){
 	 var url = window.location.search;
@@ -403,6 +406,7 @@ function disableAction(id,even){
 		$("#parse_content").val('');
 		$("#uid").val('');
 		$("#sort").val('');
+		$("#editor").val('');
 	}
 	else{
 		$("#id").val(data.id);
@@ -418,6 +422,7 @@ function disableAction(id,even){
     	$("#group_id").val(data.group_id);
     	$("#address").val(data.address);
     	$("#parse_content").val(data.parse_content);
+		$("#editor").val(data.parse_content);
     	$("#uid").val(data.uid);
     	$("#sort").val(data.sort);
 		getGroupAction(data.category_id,data.group_id,$("#group_id"));
@@ -436,6 +441,7 @@ function disableAction(id,even){
       $("#group_id").attr({readonly:true,disabled:true});
       $("#address").attr({readonly:true,disabled:true});
       $("#parse_content").attr({readonly:true,disabled:true});
+		$("#editor").attr({readonly:true,disabled:true});
       $("#uid").attr({readonly:true,disabled:true});
       $("#sort").attr({readonly:true,disabled:true});
 	$('#edit_dialog_ok').addClass('hidden');
@@ -454,11 +460,23 @@ function disableAction(id,even){
       $("#group_id").attr({readonly:false,disabled:false});
       $("#address").attr({readonly:false,disabled:false});
       $("#parse_content").attr({readonly:false,disabled:false});
+		$("#editor").attr({readonly:false,disabled:false});
       $("#uid").attr({readonly:false,disabled:false});
       $("#sort").attr({readonly:false,disabled:false});
 		$('#edit_dialog_ok').removeClass('hidden');
 		}
 		$('#edit_dialog').modal('show');
+	 if( !CKEDITOR.instances['editor'] ){
+		 var meditor =CKEDITOR.replace( 'editor', {
+			 uiColor: '#9AB8F3',filebrowserUploadUrl:'/upload/ckimage',
+			 filebrowserImageUploadUrl: '/upload/ckimage'
+		 });
+		 meditor.on( 'change', function( evt ) {
+			 $("#parse_content").val(evt.editor.getData());
+		 });
+	 }else{
+		 CKEDITOR.instances['editor'].setData(data.parse_content?data.parse_content:'');
+	 }
 }
 
 function initModel(id, type, fun){

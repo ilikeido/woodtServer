@@ -144,12 +144,12 @@ class DemandService extends Demand {
         if($order == null){
             $order = 'id desc';
         }
-        $query = (new Query())->from('demand')->select(['id','uid','title','view','create_time','buy_or_sale'])->orderBy($order)->where(['flag' => 1]);
+        $query = (new Query())->from('demand')->select(['id','uid','title','view','create_time','buy_or_sale'])->where(['flag' => 1]);
         if ($root === 'sale'){
-            $query = $query->andWhere(['buy_or_sale'=>2]);
+            $query = $query->andWhere(['buy_or_sale'=>1]);
         }
         if($root === 'buy'){
-            $query = $query->andWhere(['buy_or_sale'=>1]);
+            $query = $query->andWhere(['buy_or_sale'=>2]);
         }
         if(!empty($catory) && !($catory === 'demand')){
             $query = $query->andWhere(['category_id'=>$catory]);

@@ -55,7 +55,7 @@ class UserEvendataService extends UserEvendata{
      * 获取用户详情
      */
     public static function getDetail($uid){
-        $userResult = UserAccountService::find()->select(['username','email','mobile','uid','nickname','avatar','score','product','contact','parse_content'])->where(['uid'=>$uid])->one();
+        $userResult = UserAccountService::find()->select(['username','email','mobile','uid','nickname','avatar','score','product','contact','parse_content'])->where(['uid'=>$uid])->asArray()->one();
         $query = (new Query())->select(['demand_tag.name AS name']) -> from('demand_tag')-> leftJoin('user_tag','user_tag.tagid = demand_tag.id')->where(['user_tag.uid'=>$uid]) ;
         $tags = $query->all();
         $userResult['tags'] = ArrayHelper::getColumn($tags,'name');

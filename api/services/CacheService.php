@@ -7,6 +7,7 @@
  */
 
 namespace api\services;
+use Yii;
 
 class CacheService  {
 

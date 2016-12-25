@@ -36,7 +36,7 @@ class News extends \backend\models\BaseModel
     public function rules()
     {
         return [
-            [['title', 'category', 'tags', 'parse_content'], 'required'],
+            [['title', 'category', 'parse_content'], 'required'],
             [['cover_id', 'view', 'uid', 'pos','sort', 'flag'], 'integer'],
             [['parse_content'], 'string'],
             [['create_time'], 'safe'],

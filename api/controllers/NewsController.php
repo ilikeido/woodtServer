@@ -44,7 +44,7 @@ class NewsController extends BaseController
     public function actionDetail()
     {
         $id = Yii::$app->request->post('id');
-        $new =  NewsService::find()->select(['id','title','view','create_time','cover_thumb_url','parse_content'])->asArray()->one();
+        $new =  NewsService::find()->select(['id','title','view','create_time','cover_thumb_url','parse_content'])->where(['id'=>$id])->asArray()->one();
         $createtimeFormat = BaseService::format_date(strftime($new['create_time']));
         $new['create_time_format'] = $createtimeFormat;
         return ['code'=>0,'msg'=>"",'time'=>time(),'data'=>$new];

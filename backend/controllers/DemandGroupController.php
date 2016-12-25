@@ -9,7 +9,7 @@ use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use dmt\tools\CacheTool;
+use backend\services\CacheService;
 
 /**
  * DemandGroupController implements the CRUD actions for DemandGroup model.
@@ -111,8 +111,8 @@ class DemandGroupController extends BaseController
             $msg = array('errno'=>2, 'msg'=>'数据出错');
             echo json_encode($msg);
         }
-        CacheTool::restDependencyValue(CacheTool::CACHEKEY_GET_CATORY_AND_TAG);
-        CacheTool::restDependencyValue(CacheTool::CACHEKEY_GET_ALL_CATORYS);
+        CacheService::restDependencyValue(CacheService::CACHEKEY_GET_CATORY_AND_TAG);
+        CacheService::restDependencyValue(CacheService::CACHEKEY_GET_ALL_CATORYS);
     }
 
     /**
@@ -140,8 +140,8 @@ class DemandGroupController extends BaseController
             $msg = array('errno'=>2, 'msg'=>'数据出错');
             echo json_encode($msg);
         }
-        CacheTool::restDependencyValue(CacheTool::CACHEKEY_GET_CATORY_AND_TAG);
-        CacheTool::restDependencyValue(CacheTool::CACHEKEY_GET_ALL_CATORYS);
+        CacheService::restDependencyValue(CacheService::CACHEKEY_GET_CATORY_AND_TAG);
+        CacheService::restDependencyValue(CacheService::CACHEKEY_GET_ALL_CATORYS);
     }
 
     /**
@@ -160,8 +160,8 @@ class DemandGroupController extends BaseController
         else{
             echo json_encode(array('errno'=>2, 'msg'=>''));
         }
-        CacheTool::restDependencyValue(CacheTool::CACHEKEY_GET_CATORY_AND_TAG);
-        CacheTool::restDependencyValue(CacheTool::CACHEKEY_GET_ALL_CATORYS);
+        CacheService::restDependencyValue(CacheService::CACHEKEY_GET_CATORY_AND_TAG);
+        CacheService::restDependencyValue(CacheService::CACHEKEY_GET_ALL_CATORYS);
     }
 
     /**

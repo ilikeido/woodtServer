@@ -98,8 +98,7 @@ $modelLabel = new \backend\models\News();
                 echo '  <td>' . $model->description . '</td>';
                 echo '  <td>' . $model->category . '</td>';
                 echo '  <td>' . $model->tags . '</td>';
-                echo '  <td>' . $model->cover_id . '</td>';
-                echo '  <td><img src="http://static.testwoodt.com/' . $model->cover_thumb_url . '" style="height:40px;width:70px"></td>';
+                echo '  <td><img src="http://static.yujianong.com/' . $model->cover_thumb_url . '" style="height:40px;width:70px"></td>';
                 echo '  <td>' . $model->create_time . '</td>';
                 echo '  <td>' . $model->view . '</td>';
                 echo '  <td>' . $model->uid . '</td>';
@@ -192,7 +191,7 @@ $modelLabel = new \backend\models\News();
               <label for="category" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("category")?></label>
               <div class="col-sm-10">
 				  <select class="form-control" name="News[category]" id="category">
-					  <option>请选择</option>
+					  <option value="">请选择</option>
 					  <?php
 
 					  foreach($categorys as $key=>$data){
@@ -208,7 +207,7 @@ $modelLabel = new \backend\models\News();
               <label for="tags" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("tags")?></label>
               <div class="col-sm-10">
 				  <select class="form-control" id="tags" name="News[tags]">
-					  <option>请选择</option>
+					  <option value="">请选择</option>
 					  <?php
 
 					  foreach($tags as $key=>$data){
@@ -264,7 +263,7 @@ $modelLabel = new \backend\models\News();
 	}
 </style>
  <script>
-	 var imageServerPath = 'http://static.testwoodt.com/'
+	 var imageServerPath = 'http://static.yujianong.com/'
 function orderby(field, op){
 	 var url = window.location.search;
 	 var optemp = field + " desc";
@@ -292,7 +291,6 @@ function orderby(field, op){
 		initModel(id, 'view', 'fun');
 	}
 
-var imageBasePath = "http://static.testwoodt.com";
  function initEditSystemModule(data, type){
 	if(type == 'create'){
 		$("#id").val('');
@@ -341,7 +339,7 @@ var imageBasePath = "http://static.testwoodt.com";
 //	 var ckpath = '<?//=Url::base()?>///plugins/';
 	 initEditIconAction(data.cover_thumb_url);
 	 if($('#cover_thumb_url').val()){
-		 $(".file-default-preview").html('<img src="' + imageBasePath +  $('#cover_thumb_url').val() + '" alt="图标" style="width:150px">');
+		 $(".file-default-preview").html('<img src="' + imageServerPath +  $('#cover_thumb_url').val() + '" alt="图标" style="width:150px">');
 	 }else{
 		 $(".file-default-preview").html('<img src="" alt="图标" style="width:150px">');
 	 }

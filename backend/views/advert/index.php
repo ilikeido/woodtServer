@@ -91,7 +91,7 @@ $modelLabel = new \backend\models\Advert();
                 echo '  <td>' . $model->goto . '</td>';
                 echo '  <td>' . $model->record_id . '</td>';
                 echo '  <td>' . $model->category_title . '</td>';
-                echo '  <td><img src="http://static.testwoodt.com' . $model->banner_url . '" style="height:50px;width=100px"></td>';
+                echo '  <td><img src="http://static.yujianong.com' . $model->banner_url . '" style="height:50px;width=100px"></td>';
                 echo '  <td class="center">';
                 echo '      <a id="view_btn" onclick="viewAction(' . $model->id . ')" class="btn btn-primary btn-sm" href="#"> <i class="glyphicon glyphicon-zoom-in icon-white"></i>查看</a>';
                 echo '      <a id="edit_btn" onclick="editAction(' . $model->id . ')" class="btn btn-primary btn-sm" href="#"> <i class="glyphicon glyphicon-edit icon-white"></i>修改</a>';
@@ -276,7 +276,7 @@ function orderby(field, op){
  function viewAction(id){
 		initModel(id, 'view', 'fun');
 	}
-var imageBasePath = "http://static.testwoodt.com";
+var imageBasePath = "http://static.yujianong.com";
 
 function initEditBannerUrlAction() {
 	$("#input-image").fileinput({

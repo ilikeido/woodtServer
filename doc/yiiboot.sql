@@ -468,7 +468,7 @@ CREATE TABLE `user_group` (
 --  Records of `user_group`
 -- ----------------------------
 BEGIN;
-INSERT INTO `user_group` VALUES ('1', '0', 'http://static.testwoodt.com/20161205/1024241007102407问号.png', '1', '普通会员', '');
+INSERT INTO `user_group` VALUES ('1', '0', 'http://static.yujianong.com/20161205/1024241007102407问号.png', '1', '普通会员', '');
 COMMIT;
 
 -- ----------------------------

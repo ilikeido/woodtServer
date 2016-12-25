@@ -4,7 +4,7 @@ namespace api\services;
 class BaseService
 {
     public static function getImageBasePath(){
-      return 'http://static.testwoodt.com';
+      return 'http://static.yujianong.com';
     }
 
     public static function format_date($time) {

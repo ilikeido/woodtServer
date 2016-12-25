@@ -96,7 +96,7 @@ class UploadController extends Controller
                 $fileName = date("HiiHsHis").$model->file->baseName . "." . $model->file->extension;
                 $dir = $dir."/". $fileName;
                 $model->file->saveAs($dir);
-                $uploadSuccessPath = "http://static.testwoodt.com/".date("Ymd").'/'.$fileName;
+                $uploadSuccessPath = "http://static.yujianong.com/".date("Ymd").'/'.$fileName;
                 echo "<script type=\"text/javascript\">" . "window.parent.CKEDITOR.tools.callFunction(" . $callback . ",'" . $uploadSuccessPath . "',''" . ")" . "</script>";
             }
         }

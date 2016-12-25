@@ -16,7 +16,6 @@ class UserDeviceController extends BaseController
      */
     public function actionSave()
     {
-
         $start = Yii::$app->request->post('start');
         $device_id = Yii::$app->request->post('device_id');
         $device_name = Yii::$app->request->post('device_name');

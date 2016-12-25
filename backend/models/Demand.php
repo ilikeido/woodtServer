@@ -49,7 +49,7 @@ class Demand extends \backend\models\BaseModel
     public function rules()
     {
         return [
-            [['title', 'category_id', 'parse_content', 'uid', 'tags'], 'required'],
+            [['title', 'category_id', 'parse_content', 'uid'], 'required'],
             [['view', 'number', 'buy_or_sale', 'area', 'category_id', 'group_id', 'uid', 'pos', 'flag', 'sort'], 'integer'],
             [['create_time'], 'safe'],
             [['price'], 'number'],

@@ -41,6 +41,16 @@ $config = [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+        'cache' => [
+            'class' => 'yii\caching\MemCache',
+            'servers' => [
+                [
+                    'host' => 'localhost',
+                    'port' => 11211
+                ],
+            ],
+            'useMemcached' => true ,
+        ],
     ],
     'params' => $params,
     'language'=>'zh-CN'

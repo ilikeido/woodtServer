@@ -12,7 +12,9 @@ $modelLabel = new \backend\models\UserAccount();
 ?>
 
 <?php $this->beginBlock('header');  ?>
-<!-- <head></head>中代码块 -->
+<script src="<?=Url::base()?>/plugins/bootstrap-fileinput/fileinput.min.js"></script>
+<link rel="stylesheet" href="<?=Url::base()?>/plugins/bootstrap-fileinput/fileinput.min.css">
+<script src="<?=Url::base()?>/plugins/bootstrap-fileinput/locales/zh.js"></script>
 <?php $this->endBlock(); ?>
 
 <!-- Main content -->
@@ -87,7 +89,7 @@ $modelLabel = new \backend\models\UserAccount();
                 echo '  <td>' . $model->nickname . '</td>';
                 echo '  <td>' . $model->email . '</td>';
                 echo '  <td>' . $model->mobile . '</td>';
-                echo '  <td>' . $model->avatar . '</td>';
+                echo '  <td><img src="http://static.yujianong.com/' . $model->avatar . '" style="height:40px;width:40px"></td>';
                 echo '  <td>' . $model->contact . '</td>';
                 echo '  <td>' . $model->product . '</td>';
                 echo '  <td>' . $model->flag . '</td>';
@@ -188,14 +190,15 @@ $modelLabel = new \backend\models\UserAccount();
               </div>
               <div class="clearfix"></div>
           </div>
-
-          <div id="avatar_div" class="form-group">
-              <label for="avatar" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("avatar")?></label>
-              <div class="col-sm-10">
-                  <input type="text" class="form-control" id="avatar" name="UserAccount[avatar]" placeholder="" />
-              </div>
-              <div class="clearfix"></div>
-          </div>
+			<div id="avatar_div" class="form-group">
+				<div id="kv-avatar-errors-1" class="center-block" style="width:500px;display:none"></div>
+				<label for="cover_thumb_url" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("avatar")?></label>
+				<div class="col-sm-10">
+					<input type="hidden" class="form-control" id="avatar" name="UserAccount[avatar]" placeholder="" />
+					<input id="input-image" name="file" type="file" multiple class="file-loading" accept="image/*">
+				</div>
+				<div class="clearfix"></div>
+			</div>
 
           <div id="contact_div" class="form-group">
               <label for="contact" class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("contact")?></label>
@@ -248,7 +251,22 @@ $modelLabel = new \backend\models\UserAccount();
 </div>
 <?php $this->beginBlock('footer');  ?>
 <!-- <body></body>后代码块 -->
- <script>
+
+<style>
+	.kv-avatar .file-preview-frame,.kv-avatar .file-preview-frame:hover {
+		margin: 0;
+		padding: 0;
+		border: none;
+		box-shadow: none;
+		text-align: center;
+	}
+	.kv-avatar .file-input {
+		display: table-cell;
+		max-width: 220px;
+	}
+</style>
+<script>
+	var imageServerPath = 'http://static.yujianong.com/'
 function orderby(field, op){
 	 var url = window.location.search;
 	 var optemp = field + " desc";
@@ -284,6 +302,7 @@ function orderby(field, op){
 		$("#email").val('');
 		$("#mobile").val('');
 		$("#avatar").val('');
+		$("#input-image").val('');
 		$("#contact").val('');
 		$("#product").val('');
 		$("#parse_content").val('');
@@ -310,6 +329,7 @@ function orderby(field, op){
       $("#email").attr({readonly:true,disabled:true});
       $("#mobile").attr({readonly:true,disabled:true});
       $("#avatar").attr({readonly:true,disabled:true});
+	  $("#input-image").attr({readonly:true,disabled:true});
       $("#contact").attr({readonly:true,disabled:true});
       $("#product").attr({readonly:true,disabled:true});
       $("#parse_content").attr({readonly:true,disabled:true});
@@ -318,12 +338,18 @@ function orderby(field, op){
 	$('#edit_dialog_ok').addClass('hidden');
 	}
 	else{
-      $("#id").attr({readonly:false,disabled:false});
-      $("#username").attr({readonly:false,disabled:false});
+		if(type == 'create'){
+			$("#id").attr({readonly:false,disabled:false});
+			$("#username").attr({readonly:false,disabled:false});
+		}else{
+			$("#id").attr({readonly:true,disabled:true});
+			$("#username").attr({readonly:true,disabled:true});
+		}
       $("#nickname").attr({readonly:false,disabled:false});
       $("#email").attr({readonly:false,disabled:false});
       $("#mobile").attr({readonly:false,disabled:false});
       $("#avatar").attr({readonly:false,disabled:false});
+	  $("#input-image").attr({readonly:false,disabled:false});
       $("#contact").attr({readonly:false,disabled:false});
       $("#product").attr({readonly:false,disabled:false});
       $("#parse_content").attr({readonly:false,disabled:false});
@@ -332,6 +358,41 @@ function orderby(field, op){
 		$('#edit_dialog_ok').removeClass('hidden');
 		}
 		$('#edit_dialog').modal('show');
+	 initEditIconAction(data.avatar);
+	 if($('#avatar').val()){
+		 $(".file-default-preview").html('<img src="' + imageServerPath +  $('#avatar').val() + '" alt="图标" style="width:150px">');
+	 }else{
+		 $(".file-default-preview").html('<img src="" alt="图标" style="width:150px">');
+	 }
+}
+
+function initEditIconAction($avatar) {
+	$("#input-image").fileinput({
+		language: 'zh',
+		uploadUrl: "/upload/image",
+		overwriteInitial: true,
+//		maxFileSize: 1500,
+		maxImageWidth: 640,
+		maxImageHeight: 300,
+		resizeImage: true,
+		showClose: false,
+		showCaption: false,
+		browseOnZoneClick: true,
+		browseLabel: '',
+		removeLabel: '',
+		browseIcon: '<i class="glyphicon glyphicon-folder-open"></i>',
+		removeIcon: '<i class="glyphicon glyphicon-remove"></i>',
+		removeTitle: '取消或重置',
+		elErrorContainer: '#kv-avatar-errors-1',
+		msgErrorClass: 'alert alert-block alert-danger',
+		defaultPreviewContent: '<img src="' + imageServerPath + $avatar + '" alt="图标" style="width:150px">',
+		layoutTemplates: {main2: '{preview}{remove}{browse}'},
+		allowedFileExtensions: ["jpg", "png", "gif","jpeg"]
+	}).on('filepreupload', function() {
+		$('#avatar').val('');
+	}).on('fileuploaded', function(event, data) {
+		$('#avatar').val(data.response.link);
+	});
 }
 
 function initModel(id, type, fun){
@@ -435,7 +496,6 @@ $('#delete_btn').click(function (e) {
 $('#user-account-form').bind('submit', function(e) {
 	e.preventDefault();
 	var id = $("#id").val();
-	alert(id);
 	var action = id == "" ? "<?=Url::toRoute('user-account/create')?>" : "<?=Url::toRoute('user-account/update')?>";
     $(this).ajaxSubmit({
     	type: "post",

@@ -46,9 +46,16 @@ class DemandController extends BaseController
         if(!$cache->exists($key)){
             $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>DemandService::getCatorysAndTag()];
             $dependency = new \yii\caching\ExpressionDependency(
-                ['expression'=> 'CacheService::getDependencyValue(\''.$key.'\')']
+                ['expression'=> '\api\services\CacheService::getDependencyValue(\api\services\CacheService::CACHEKEY_GET_CATORY_AND_TAG)']
             );
             $cache->add($key,$result,0,$dependency);
+            return $result;
+        }else if (empty($cache->get($key))){
+            $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>DemandService::getCatorysAndTag()];
+            $dependency = new \yii\caching\ExpressionDependency(
+                ['expression'=> '\api\services\CacheService::getDependencyValue(\api\services\CacheService::CACHEKEY_GET_CATORY_AND_TAG)']
+            );
+            $cache->set($key,$result,0,$dependency);
             return $result;
         }else{
             $value = $cache->get(CacheService::CACHEKEY_GET_CATORY_AND_TAG);
@@ -61,15 +68,23 @@ class DemandController extends BaseController
      */
     public  function actionGetallcategory(){
         $cache = Yii::$app->cache;
-        $value = $cache->get(CacheService::CACHEKEY_GET_ALL_CATORYS);
-        if($value == null){
+        $key = CacheService::CACHEKEY_GET_ALL_CATORYS;
+        if(!$cache->exists($key)){
             $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>DemandService::getAllcatorys()];
             $dependency = new \yii\caching\ExpressionDependency(
-                ['expression'=> CacheService::getDependencyValue(CacheService::CACHEKEY_GET_ALL_CATORYS)]
+                ['expression'=> '\api\services\CacheService::getDependencyValue(\api\services\CacheService::CACHEKEY_GET_ALL_CATORYS)']
             );
-            $cache->add(CacheService::CACHEKEY_GET_ALL_CATORYS,$result,0,$dependency);
+            $cache->add($key,$result,0,$dependency);
+            return $result;
+        }else if (empty($cache->get($key))){
+            $result = ['code'=>0,'msg'=>'','time'=>time(),'data'=>DemandService::getAllcatorys()];
+            $dependency = new \yii\caching\ExpressionDependency(
+                ['expression'=> '\api\services\CacheService::getDependencyValue(\api\services\CacheService::CACHEKEY_GET_ALL_CATORYS)']
+            );
+            $cache->set($key,$result,0,$dependency);
             return $result;
         }else{
+            $value = $cache->get(CacheService::CACHEKEY_GET_ALL_CATORYS);
             return $value;
         }
 

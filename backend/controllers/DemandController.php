@@ -133,11 +133,6 @@ class DemandController extends BaseController
                 $msg = array('errno'=>0, 'msg'=>'保存成功');
                 echo json_encode($msg);
             }
-
-            if($model->validate() == true && $model->save()){
-                $msg = array('errno'=>0, 'msg'=>'保存成功');
-                echo json_encode($msg);
-            }
             else{
                 $msg = array('errno'=>2, 'data'=>$model->getErrors());
                 echo json_encode($msg);
@@ -249,15 +244,18 @@ class DemandController extends BaseController
         if (empty($id) == false){
             $model = $this->findModel($id);
             if ($model != null){
-                $pos = $model['flag'];
-                if ($pos === 1){
+                $flag = $model['flag'];
+                if ($flag === 1){
                     $model['flag'] = 0;
                 }else{
                     $model['flag'] = 1;
                 }
             }
-            $model->save();
-            echo json_encode(array('errno'=>0, 'msg'=>'','pos'=>$model['flag']));
+            if ($model->validate() && $model->save()){
+                echo json_encode(array('errno'=>0, 'msg'=>'','pos'=>$model['flag']));
+            }else{
+                echo json_encode(array('errno'=>2, 'msg'=>$model->getErrors()));
+            }
         }else{
             echo json_encode(array('errno'=>2, 'msg'=>''));
         }
